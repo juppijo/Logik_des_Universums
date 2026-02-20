@@ -1,0 +1,57 @@
+
+document.addEventListener('DOMContentLoaded', function() {
+    const pageFlip = new St.PageFlip(document.getElementById('book'), {
+        width: 725, height: 900, // DEUTLICH GRÖSSER
+        size: "fixed",
+        minWidth: 400, maxWidth: 1200,
+        minHeight: 600, maxHeight: 1600,
+        drawShadow: true, showCover: true,
+        usePortrait: false, // Erzwingt Doppelseite wenn Platz da ist
+        mobileScrollSupport: false
+    });
+    pageFlip.loadFromHTML(document.querySelectorAll('.page'));
+
+    // TOC Generator & Funktionen
+    const toc = document.getElementById('toc-inject');
+    const contents = document.querySelectorAll('.page-content');
+    let html = '<ul style="list-style:none; padding:0;">';
+    contents.forEach((c, i) => {
+        const h = c.querySelector('h1, h2');
+        if(h && i > 0) html += `<li style="margin:12px 0; border-bottom:1px dotted #ccc;"><a href="#" onclick="window.flipToPage(${i})" style="text-decoration:none; color:inherit; display:flex; justify-content:space-between;">${h.innerText} <span>S. ${i+1}</span></a></li>`;
+    });
+    if(toc) toc.innerHTML = html + '</ul>';
+
+    const synth = window.speechSynthesis;
+    let isReading = false;
+    function stop() { synth.cancel(); isReading = false; document.getElementById('btn-speak').innerText = "▶ Vorlesen"; }
+
+    document.getElementById('btn-speak').addEventListener('click', () => {
+        if(synth.speaking) stop();
+        else {
+            isReading = true;
+            const idx = pageFlip.getCurrentPageIndex();
+            const pages = document.querySelectorAll('.page-content');
+            let txt = pages[idx].innerText;
+            if(idx > 0 && idx + 1 < pages.length) txt += " " + pages[idx+1].innerText;
+            const u = new SpeechSynthesisUtterance(txt);
+            u.lang = 'de-DE';
+            u.onend = () => { if(isReading && idx+2 < pages.length) { pageFlip.flipNext(); setTimeout(() => document.getElementById('btn-speak').click(), 1200); } else stop(); };
+            synth.speak(u);
+            document.getElementById('btn-speak').innerText = "■ Stop";
+        }
+    });
+
+    document.getElementById('btn-dark-mode').addEventListener('click', () => document.body.classList.toggle('dark-mode'));
+    document.getElementById('btn-zen').addEventListener('click', () => { document.body.classList.add('zen-mode'); alert("Zen aktiv. 'ESC' zum Beenden."); });
+    document.addEventListener('keydown', e => { if(e.key === "Escape") document.body.classList.remove('zen-mode'); });
+    document.getElementById('btn-bookmark').addEventListener('click', () => { localStorage.setItem('u_book', pageFlip.getCurrentPageIndex()); alert('Lesezeichen gesetzt!'); });
+    document.getElementById('btn-prev').addEventListener('click', () => { stop(); pageFlip.flipPrev(); });
+    document.getElementById('btn-next').addEventListener('click', () => { stop(); pageFlip.flipNext(); });
+    document.getElementById('btn-toc').addEventListener('click', () => { stop(); pageFlip.flip(1); });
+
+    pageFlip.on('flip', e => { document.getElementById('page-info').innerText = "Seite " + (e.data + 1); });
+    window.flipToPage = n => { stop(); pageFlip.flip(n); };
+
+    const saved = localStorage.getItem('u_book');
+    if(saved) setTimeout(() => { if(confirm('Lesezeichen laden?')) pageFlip.turnToPage(parseInt(saved)); }, 1000);
+});
