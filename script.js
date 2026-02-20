@@ -20,9 +20,23 @@ document.addEventListener('DOMContentLoaded', function() {
     const toc = document.getElementById('toc-inject');
     const contents = document.querySelectorAll('.page-content');
     let html = '<ul style="list-style:none; padding:0;">';
+
     contents.forEach((c, i) => {
-        const h = c.querySelector('h1, h2');
-        if(h && i > 0) html += `<li style="margin:12px 0; border-bottom:1px dotted #ccc;"><a href="#" onclick="window.flipToPage(${i})" style="text-decoration:none; color:inherit; display:flex; justify-content:space-between;">${h.innerText} <span>S. ${i+1}</span></a></li>`;
+        const h = c.querySelector('h1, h2, h3, h4, h5');
+        if(h && i > 0) {
+            // Hier ist der Trick: Wir merken uns, welcher Tag es war (h1, h2, etc.)
+            const tagName = h.tagName.toLowerCase(); 
+            
+            html += `
+                <li class="toc-item-${tagName}" style="margin:12px 0; border-bottom:1px dotted #ccc;">
+                    <a href="#" onclick="window.flipToPage(${i+2})" style="text-decoration:none; color:inherit; display:flex; justify-content:space-between;">
+                        <${tagName} style="margin:0; font-size:inherit; font-family:inherit; font-weight:inherit;">
+                            ${h.innerText}
+                        </${tagName}>
+                        <span>S. ${i+2}</span>
+                    </a>
+                </li>`;
+        }
     });
     if(toc) toc.innerHTML = html + '</ul>';
 
