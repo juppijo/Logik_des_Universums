@@ -61,7 +61,34 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     document.getElementById('btn-dark-mode').addEventListener('click', () => document.body.classList.toggle('dark-mode'));
-    document.getElementById('btn-zen').addEventListener('click', () => { document.body.classList.add('zen-mode'); alert("Zen aktiv. 'ESC' zum Beenden."); });
+
+    document.getElementById('btn-zen').addEventListener('click', () => {
+        // 1. Zen-Klasse für CSS hinzufügen
+        document.body.classList.add('zen-mode');
+        
+        // 2. Browser in den echten Vollbildmodus versetzen
+        if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen();
+        } else if (document.documentElement.mozRequestFullScreen) { // Firefox
+            document.documentElement.mozRequestFullScreen();
+        } else if (document.documentElement.webkitRequestFullscreen) { // Chrome, Safari
+            document.documentElement.webkitRequestFullscreen();
+        } else if (document.documentElement.msRequestFullscreen) { // IE/Edge
+            document.documentElement.msRequestFullscreen();
+        }
+    });
+
+
+    // ESC-Taste: Beendet den Zen-Modus und den Vollbildmodus
+    document.addEventListener('keydown', e => {
+        if (e.key === "Escape") {
+            document.body.classList.remove('zen-mode');
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            }
+        }
+    });
+
     document.addEventListener('keydown', e => { if(e.key === "Escape") document.body.classList.remove('zen-mode'); });
     document.getElementById('btn-bookmark').addEventListener('click', () => { localStorage.setItem('u_book', pageFlip.getCurrentPageIndex()); alert('Lesezeichen gesetzt!'); });
     document.getElementById('btn-prev').addEventListener('click', () => { stop(); pageFlip.flipPrev(); });
