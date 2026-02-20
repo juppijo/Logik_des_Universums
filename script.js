@@ -3,8 +3,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Dynamische Berechnung der Buchgröße basierend auf Fensterhöhe
     const h = window.innerHeight * 0.90; 
-    const w = h * 0.75; // Goldenes Schnittverhältnis
-
+    //const w = h * 0.75; // Goldenes Schnittverhältnis
+    const w = window.innerWidth * 0.46;
     const pageFlip = new St.PageFlip(document.getElementById('book'), {
         width: w, height: h,
         size: "fixed",
