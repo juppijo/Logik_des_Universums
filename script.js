@@ -22,13 +22,13 @@ document.addEventListener('DOMContentLoaded', function() {
     let html = '<ul style="list-style:none; padding:0;">';
 
     contents.forEach((c, i) => {
-        const h = c.querySelector('h1, h2, h3, h4, h5');
+        const h = c.querySelector('h1, h2, h3, h4, h5, h6');
         if(h && i > 0) {
             // Hier ist der Trick: Wir merken uns, welcher Tag es war (h1, h2, etc.)
             const tagName = h.tagName.toLowerCase(); 
-            
+            //    style="margin:10px 0; border-bottom:1px dotted #ccc;"
             html += `
-                <li class="toc-item-${tagName}" style="margin:12px 0; border-bottom:1px dotted #ccc;">
+                <li class="toc-item-${tagName}"> 
                     <a href="#" onclick="window.flipToPage(${i+2})" style="text-decoration:none; color:inherit; display:flex; justify-content:space-between;">
                         <${tagName} style="margin:0; font-size:inherit; font-family:inherit; font-weight:inherit;">
                             ${h.innerText}
