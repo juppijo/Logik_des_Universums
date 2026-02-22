@@ -1,13 +1,13 @@
 
 document.addEventListener('DOMContentLoaded', function() {
-    const w = window.innerWidth * 0.95;
-    const h = window.innerHeight * 0.75;
+    const w = window.innerWidth * 0.99;
+    const h = window.innerHeight * 0.99;
 
     const pageFlip = new St.PageFlip(document.getElementById('book'), {
         width: w, height: h,
-        size: "stretch",
-        minWidth: 250, maxWidth: 600,
-        minHeight: 400, maxHeight: 1000,
+        size: "fixed",
+        //minWidth: 250, maxWidth: 600,
+        //minHeight: 400, maxHeight: 1000,
         drawShadow: true, 
         showCover: false,
         usePortrait: true,      // ERZWINGT EINZELSEITE
