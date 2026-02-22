@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('btn-next').addEventListener('click', () => { stop(); pageFlip.flipNext(); });
     document.getElementById('btn-toc').addEventListener('click', () => { stop(); pageFlip.flip(1); });
 
-    pageFlip.on('flip', e => { document.getElementById('page-info').innerText = "Seite " + (e.data + 1); });
+    pageFlip.on('flip', e => { document.getElementById('page-info').innerText = "S. " + (e.data + 1); });
     window.flipToPage = n => { stop(); pageFlip.flip(n); };
 
     const saved = localStorage.getItem('m_book');

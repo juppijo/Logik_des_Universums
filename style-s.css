@@ -39,7 +39,7 @@ body.zen-mode .controls-top, body.zen-mode .controls-bottom { display: none; }
 
 #page-info { color: white; font-size: 0.8rem; }
 button { 
-    padding: 8px 12px; cursor: pointer; background: var(--accent-color); 
+    padding: 7px 10px; cursor: pointer; background: var(--accent-color); 
     color: #eeeeff; border: none; border-radius: 10px; font-weight: bold; 
 }
 
