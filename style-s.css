@@ -24,7 +24,7 @@ body {
     text-align: left; 
 }
 
-img { max-width: 100%; height: auto; display: block; margin: 15px auto; border-radius: 5px; }
+img { max-width: auto; height: 80vh; display: block; margin: 15px auto; border-radius: 5px; }
 
 /* Steuerung oben und unten für Daumenbedienung */
 .controls-top, .controls-bottom { 
