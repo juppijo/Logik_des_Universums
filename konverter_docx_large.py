@@ -4,8 +4,8 @@ import re
 from bs4 import BeautifulSoup
 
 # Konfiguration
-DOCX_FILE = "LOGIK DES UNIVERSUMS  4.1.docx"
-OUTPUT_DIR = "universum_docx_large"
+DOCX_FILE = "Die Kunst des einfühlsamen Zuhörens und Sprechens.docx"
+OUTPUT_DIR = "Die Kunst des einfühlsamen Zuhörens und Sprechens"
 IMG_DIR = os.path.join(OUTPUT_DIR, "images")
 
 if not os.path.exists(IMG_DIR):
@@ -35,17 +35,53 @@ def create_large_book():
         raw_html = result.value
 
     soup = BeautifulSoup(raw_html, 'html.parser')
+
+    # ... (vorheriger Code bleibt gleich)
+
     pages = []
     current_content = ""
-    limit = 1400 # Mehr Platz für Text durch größeres Format
+    limit = 1200 
 
     for el in soup.contents:
         el_str = str(el)
+        
+        # 1. Bedingung: Manuelles Symbol ### gefunden
+        manual_break = "###" in el_str
+        
+        # 2. Bedingung: Das Element ist ein Bild (img-Tag)
+        # BeautifulSoup hilft uns hier zu prüfen, ob ein Bild im aktuellen Element steckt
+        contains_image = False
+        if el.name: # Nur echte HTML-Tags prüfen, keine reinen Textknoten
+            if el.name == 'img' or el.find('img'):
+                contains_image = True
+
+        # Wenn eines von beiden zutrifft:
+        if manual_break or contains_image:
+            # Falls ### vorhanden, Text säubern
+            if manual_break:
+                el_str = el_str.replace("###", "")
+            
+            # Das aktuelle Element (Bild oder Text vor dem ###) noch zur Seite hinzufügen
+            current_content += el_str
+            
+            # Seite sofort abschließen und neue beginnen
+            if current_content:
+                pages.append(current_content)
+                current_content = ""
+            continue 
+
+        # Normaler Umbruch bei Kapiteln oder Zeichenlimit
         if el.name in ['h1', 'h2'] or len(current_content) + len(el_str) > limit:
-            if current_content: pages.append(current_content)
-            current_content = ""
+            if current_content:
+                pages.append(current_content)
+                current_content = ""
+        
         current_content += el_str
-    if current_content: pages.append(current_content)
+
+    if current_content:
+        pages.append(current_content)
+
+    # ... (Rest des Skripts bleibt gleich)
 
     all_pages = [pages[0], "<h1>Inhaltsverzeichnis</h1><div id='toc-inject'></div>"] + pages[1:]
     if len(all_pages) % 2 != 0: all_pages.append("<p style='text-align:center; margin-top:50%;'>- Finis -</p>")
@@ -57,7 +93,7 @@ def create_large_book():
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Logik des Universums - Large Edition</title>
+    <title>Die Kunst des einfühlsamen Zuhörens und Sprechens</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lora:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -108,7 +144,7 @@ body { background: var(--bg-color); margin: 0; display: flex; flex-direction: co
     font-size: 14px; line-height: 1.2; color: var(--text-color); 
     text-align: justify; hyphens: auto;
 }
-img { max-width: 100%; max-height: 400px; display: block; margin: 30px auto; border-radius: 5px; border: 5px solid #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+img { max-width: auto; max-height: 60vh; display: block; margin: 30px auto; border-radius: 5px; border: 5px solid #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
 
 .controls { margin-top: 1px; margin-bottom: 1px; z-index: 100; display: flex; align-items: center; background: rgba(0,0,20,0.7); padding: 12px 25px; border-radius: 50px; backdrop-filter: blur(10px); }
 
