@@ -25,12 +25,16 @@ body {
 }
 
 img { max-width: auto; height: 80vh; display: block; margin: 15px auto; border-radius: 5px; }
+.book-image{
+    height: 40vh;
+}
 
 /* Steuerung oben und unten für Daumenbedienung */
 .controls-top, .controls-bottom { 
     z-index: 100; display: flex; align-items: center; justify-content: space-around; 
-    background: rgba(0,0,20,0.85); padding: 10px; backdrop-filter: blur(10px); 
+    background: rgba(0,0,20,0.85); padding: 10px; backdrop-filter: blur(10px);  
 }
+
 
 .controls-top { border-bottom: 1px solid rgba(255,255,255,0.1); }
 .controls-bottom { border-top: 1px solid rgba(255,255,255,0.1); }
