@@ -1,44 +1,181 @@
+:root {
+    /* DEINE ZENTRALE STEUERUNG */
+    --base-hue: 180; /* Dein Startpunkt (Cyan) */
 
-:root { --bg-color: #090a3f; --paper-color: #fdfaf3; --text-color: #2c3e50; --accent-color: #696a9f; }
-body.dark-mode { --bg-color: #050515; --paper-color: #1a1a2a; --text-color: #e0e0e0; --accent-color: #393a6f; }
-body.zen-mode { --bg-color: #000; }
+    /* DYNAMISCHE FARBBERECHNUNG */
+    /* Hintergrund: Sehr dunkel, hohe Sättigung für Tiefe */
+    --bg-color: hsl(var(--base-hue), 75%, 15%); 
+    
+    /* Papier: Ganz leicht getönt für den antiken Look */
+    --paper-color: hsl(var(--base-hue), 20%, 97%); 
+    
+    /* Text: Fast schwarz, aber mit einem Schuss deiner Grundfarbe */
+    --text-color: hsl(var(--base-hue), 30%, 25%); 
+    
+    /* Akzent: Mittlere Helligkeit für Buttons/Highlights */
+    --accent-color: hsl(var(--base-hue), 25%, 50%);
 
+    /* ÜBERSCHRIFTEN (Wie besprochen) */
+    --color-h1: hsl(var(--base-hue), 70%, 25%);         
+    --color-h2: hsl(calc(var(--base-hue) + 30), 60%, 35%);  
+    --color-h3: hsl(calc(var(--base-hue) - 30), 55%, 35%);  
+    --color-h4: hsl(calc(var(--base-hue) + 180), 50%, 45%); 
+    --color-h5: hsl(calc(var(--base-hue) + 60), 40%, 45%);  
+    --accent-line: hsl(var(--base-hue), 60%, 70%);
+}
+
+/* DARK MODE VARIATIONEN */
+body.dark-mode {
+    --bg-color: hsl(var(--base-hue), 50%, 5%);
+    --paper-color: hsl(var(--base-hue), 25%, 15%);
+    --text-color: hsl(var(--base-hue), 10%, 85%);
+    --accent-color: hsl(var(--base-hue), 30%, 40%);
+}
+
+body.zen-mode {
+    --bg-color: hsl(0, 0%, 0%); /* Zen bleibt absolut schwarz */
+}
+
+/* STRUKTUR (1 zu 1 übernommen) */
 body { 
-    background: var(--bg-color); margin: 0; display: flex; flex-direction: column; 
-    height: 100vh; font-family: 'Lora', serif; overflow: hidden; transition: 0.5s; 
+    background: var(--bg-color); 
+    margin: 0; 
+    display: flex; 
+    flex-direction: column; 
+    height: 100vh; 
+    font-family: 'Lora', serif; 
+    overflow: hidden; 
+    transition: 0.5s; 
 }
 
 #wrapper { 
-    flex: 1; display: flex; align-items: center; justify-content: center; 
-    width: 100vw; height: calc(100vh - 120px); 
+    flex: 1; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    width: 100vw; 
+    height: calc(100vh - 120px); 
 }
 
-.stars { position: fixed; top:0; left:0; width:100%; height:100%; background: url('https://www.transparenttextures.com/patterns/cream-paper.png'); opacity: 0.2; pointer-events: none; }
+.stars { 
+    position: fixed; 
+    top:0; left:0; 
+    width:100%; 
+    height:100%; 
+    background: url('https://www.transparenttextures.com/patterns/cream-paper.png'); 
+    opacity: 0.2; 
+    pointer-events: none; 
+}
 
 #book { box-shadow: 0 0 30px rgba(0,0,0,0.5); }
 
-.page { background: var(--paper-color) !important; padding: 25px !important; box-sizing: border-box; }
+.page { 
+    background: var(--paper-color) !important; 
+    padding: 25px !important; 
+    box-sizing: border-box; 
+}
+
 .page-content { 
-    height: 100%; width: 100%; overflow-y: auto; 
-    font-size: 13px; line-height: 1.3; color: var(--text-color); 
+    height: 100%; 
+    width: 100%; 
+    overflow-y: auto; 
+    font-size: 13px; 
+    line-height: 1.3; 
+    color: var(--text-color); 
     text-align: justify; 
 }
 
-img { max-width: auto; height: 80vh; display: block; margin: 15px auto; border-radius: 5px; }
-.book-image{ max-width: 50vh; max-height: 40vh;}
+/* ZUWEISUNG DER ÜBERSCHRIFTEN-STYLES 
+h1 { color: var(--color-h1); border-bottom: 2px solid var(--accent-line); }
+h2 { color: var(--color-h2); }
+h3 { color: var(--color-h3); }
+h4 { color: var(--color-h4); }
+h5 { color: var(--color-h5); } */
 
-/* Steuerung oben und unten für Daumenbedienung */
-.controls-top, .controls-bottom { 
-    z-index: 100; display: flex; align-items: center; justify-content: space-around; 
-    background: rgba(0,0,20,0.85); padding: 10px; backdrop-filter: blur(10px); 
+/* Zuweisung der Variablen */
+
+h1 {
+    color: var(--color-h1);
+    font-size: 2.6em;
+    text-align: center;
+    /*text-transform: uppercase;*/
+    border-bottom: 4px solid var(--accent-line);
+    padding-bottom: 15px;
+    margin-bottom: 1px;
+    letter-spacing: 1px;
 }
 
-.controls-top { border-bottom: 1px solid rgba(255,255,255,0.1); }
-.controls-bottom { border-top: 1px solid rgba(255,255,255,0.1); }
+h2 {
+    color: var(--color-h2);
+    font-size: 2.1em;
+    border-left: 10px solid var(--color-h2);
+    padding-left: 20px;
+    margin-top: 40px;
+    font-style: italic;
+}
 
-body.zen-mode .controls-top, body.zen-mode .controls-bottom { display: none; }
+h3 {
+    color: var(--color-h3);
+    font-size: 1.8em;
+    border-bottom: 1px dotted var(--color-h3);
+    display: inline-block; /* Linie nur so lang wie der Text */
+    margin-top: 30px;
+}
+
+h4 {
+    color: var(--color-h4);
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-top: 25px;
+}
+
+h5 {
+    color: var(--color-h5);
+    font-size: 1.2em;
+    font-variant: small-caps;
+    letter-spacing: 2px;
+}
+
+/* Kleiner Bonus: Textabsätze im Buch */
+p {
+    margin-bottom: 1.2em;
+    text-align: justify; /* Blocksatz für den Buch-Look */
+    text-indent: 1.5em;   /* Das "kleine Tab" am Anfang jedes Absatzes */
+}
+/* Optional: Der allererste Absatz nach einer Überschrift hat oft keinen Einzug 
+h1 + p, h2 + p, h3 + p, h4 + p {
+    text-indent: 0;
+}*/
+
+img { 
+    max-width: auto; 
+    height: 80vh; 
+    display: block; 
+    margin: 15px auto; 
+    border-radius: 5px; 
+}
+
+.book-image { 
+    max-width: 50vh; 
+    max-height: 40vh;
+}
+
+/* STEUERUNG */
+.controls-top, .controls-bottom { 
+    z-index: 100; 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-around; 
+    background: hsla(var(--base-hue), 100%, 5%, 0.85); /* Passender Glas-Effekt */
+    padding: 10px; 
+    backdrop-filter: blur(10px); 
+}
+
+.controls-top { border-bottom: 1px solid hsla(0, 0%, 100%, 0.1); }
+.controls-bottom { border-top: 1px solid hsla(0, 0%, 100%, 0.1); }
 
 #page-info { color: white; font-size: 0.8rem; }
+
 button { 
     padding: 7px 10px; cursor: pointer; background: var(--accent-color); 
     color: #eeeeff; border: none; border-radius: 10px; font-weight: bold; 
@@ -50,3 +187,12 @@ button {
     border-bottom: 1px dotted #ccc; font-size: 14px;
 }
 .toc-item-h4 { padding-left: 15px; }
+
+.tab {
+    margin-left: 40px; /* Die Breite deines Tabulators */
+}
+.center {
+    text-align: center;
+    border-left: none; /* Optional: Entfernt den Seitenbalken, wenn es zentriert ist */
+    padding-left: 0;
+}
