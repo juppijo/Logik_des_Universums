@@ -1,293 +1,144 @@
 :root {
-    /* DEINE ZENTRALE STEUERUNG */
-    --base-hue: 200; /* Dein Startpunkt (Cyan) */
-
-    /* DYNAMISCHE FARBBERECHNUNG */
-    /* Hintergrund: Sehr dunkel, hohe Sättigung für Tiefe */
-    --bg-color: hsl(var(--base-hue), 75%, 15%); 
-    
-    /* Papier: Ganz leicht getönt für den antiken Look */
-    --paper-color: hsl(var(--base-hue), 20%, 97%); 
-    
-    /* Text: Fast schwarz, aber mit einem Schuss deiner Grundfarbe */
-    --text-color: hsl(var(--base-hue), 30%, 25%); 
-    
-    /* Akzent: Mittlere Helligkeit für Buttons/Highlights */
-    --accent-color: hsl(var(--base-hue), 25%, 50%);
-
-    /* ÜBERSCHRIFTEN (Wie besprochen) */
-    --color-h1: hsl(var(--base-hue), 60%, 30%);         
-    --color-h2: hsl(calc(var(--base-hue) + 30), 60%, 35%);  
-    --color-h3: hsl(calc(var(--base-hue) - 30), 55%, 35%);  
-    --color-h4: hsl(calc(var(--base-hue) + 180), 50%, 45%); 
-    --color-h5: hsl(calc(var(--base-hue) + 60), 40%, 45%);  
-    --accent-line: hsl(var(--base-hue), 60%, 70%);
+    --bg-color:     #090a3f;
+    --paper-color:  #fdfaf3;
+    --text-color:   #2c3e50;
+    --accent-color: #696a9f;
+    --font-size:    21px;
+    --img-height:   70vh;
+    --bimg-height:  55vh;
 }
-
-/* DARK MODE VARIATIONEN */
 body.dark-mode {
-    --bg-color: hsl(var(--base-hue), 50%, 5%);
-    --paper-color: hsl(var(--base-hue), 25%, 15%);
-    --text-color: hsl(var(--base-hue), 10%, 85%);
-    --accent-color: hsl(var(--base-hue), 30%, 40%);
+    --bg-color:     #050515;
+    --paper-color:  #1a1a2a;
+    --text-color:   #e0e0e0;
+    --accent-color: #393a6f;
 }
-
 body.zen-mode {
-    --bg-color: hsl(0, 0%, 0%); /* Zen bleibt absolut schwarz */
+    --bg-color:    #051515;
+    --paper-color: #1a2a2a;
+    --text-color:  #e0f0e0;
 }
 
-/* STRUKTUR (1 zu 1 übernommen) */
-body { 
-    background: var(--bg-color); 
-    margin: 0; 
-    display: flex; 
-    flex-direction: column; 
-    height: 100vh; 
-    font-family: 'Lora', serif; 
-    overflow: hidden; 
-    transition: 0.5s; 
+body {
+    background: var(--bg-color);
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    font-family: 'Lora', serif;
+    overflow: hidden;
+    transition: background 0.5s;
 }
 
-#wrapper { 
-    flex: 1; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    width: 100vw; 
-    height: calc(100vh - 20px); 
+/* Wrapper zentriert das Buch – Größe wird per JS gesetzt */
+#wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.stars { 
-    position: fixed; 
-    top:0; left:0; 
-    width:100%; 
-    height:100%; 
-    background: url('https://www.transparenttextures.com/patterns/cream-paper.png'); 
-    opacity: 0.2; 
-    pointer-events: none; 
-}
-
-#book { box-shadow: 0 0 30px rgba(0,0,0,0.8); }
-
-/*............*/
-
-.page { 
-    background: var(--paper-color) !important; 
-    padding: 20px !important; 
-    box-sizing: border-box; 
-    border: 1px solid rgba(0,0,0,0.1);
-}
-
-.page-content { 
-    height: 100%; 
-    width: 100%; 
-    overflow-y: auto; 
-    font-size: 16px; 
-    line-height: 1.2; 
-    color: var(--text-color); 
-    text-align: justify; 
-    /* hyphens: auto;  wie Wörter getrennt werden sollten */
-}
-
-/* ZUWEISUNG DER ÜBERSCHRIFTEN-STYLES 
-h1 { color: var(--color-h1); border-bottom: 2px solid var(--accent-line); }
-h2 { color: var(--color-h2); }
-h3 { color: var(--color-h3); }
-h4 { color: var(--color-h4); }
-h5 { color: var(--color-h5); } */
-
-/* Zuweisung der Variablen */
-
-h1 {
-    color: var(--color-h1);
-    font-size: 2.5em;
-    text-align: center;
-    /*text-transform: uppercase;*/
-    border-bottom: 4px solid var(--accent-line);
-    padding-bottom: 20px;
-    margin-bottom: 1px;
-    letter-spacing: 1px;
-}
-
-h2 {
-    color: var(--color-h2);
-    font-size: 2.0em;
-    border-left: 10px solid var(--color-h2);
-    padding-left: 20px;
-    margin-top: 20px;
-    font-style: italic;
-}
-
-h3 {
-    color: var(--color-h3);
-    font-size: 1.7em;
-    border-bottom: 1px dotted var(--color-h3);
-    display: inline-block; /* Linie nur so lang wie der Text */
-    margin-top: 12px;
-}
-
-h4 {
-    color: var(--color-h4);
-    font-size: 1.4em;
-    font-weight: bold;
-    margin-top: 10px;
-}
-
-h5 {
-    color: var(--color-h5);
-    font-size: 1.1em;
-    font-variant: small-caps;
-    letter-spacing: 2px;
-}
-
-/* Kleiner Bonus: Textabsätze im Buch */
-p {
-    font-size: 1em;
-    /*margin-bottom: 1em;*/
-    text-align: justify; /* Blocksatz für den Buch-Look */
-    text-indent: 1.5em;   /* Das "kleine Tab" am Anfang jedes Absatzes */
-}
-/* Optional: Der allererste Absatz nach einer Überschrift hat oft keinen Einzug 
-h1 + p, h2 + p, h3 + p, h4 + p {
-    text-indent: 0;
-}*/
-
-img { 
-    max-width: auto; 
-    height: 80vh; 
-    display: block; 
-    margin: 20px auto; 
-    border-radius: 5px; 
-    border: 5px solid #fff; 
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-}
-
-.book-image { 
-    max-width: 68vh; 
-    max-height: 50vh;
-}
-.cover-image { 
-    max-width: 70vh; 
-    max-height: 40vh;
-}
-.long-image { 
-    max-width: 50vh; 
-    max-height: 40vh;
-}
-
-body.zen-mode .controls { 
-    opacity: 0; 
-    transform: translateY(50px); 
+.stars {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: url('https://www.transparenttextures.com/patterns/cream-paper.png');
+    opacity: 0.3;
     pointer-events: none;
 }
 
-#page-info { 
-    color: white; margin: 0 15px; 
-    font-size: 0.9rem; 
-    min-width: 80px; 
-    text-align: center; 
+#book {
+    box-shadow: 0 0 100px rgba(0,0,0,0.8);
+    /* transform-origin gesetzt per JS */
 }
 
-button { 
-    padding: 10px 18px; 
-    cursor: pointer; 
-    background: var(--accent-color); 
-    color: #eeeeff; border: none; 
-    border-radius: 20px; 
-    font-weight: bold; 
-    margin: 0 5px; 
-    transition: 0.3s; 
+.page {
+    background: var(--paper-color) !important;
+    padding: 40px !important;
+    box-sizing: border-box;
+    border: 1px solid rgba(0,0,0,0.1);
 }
-
-/* STEUERUNG */
-.controls { 
-    margin-top: 1px; 
-    margin-bottom: 1px; 
-    z-index: 100; 
-    display: flex; 
-    align-items: center; 
-    background:  hsla(var(--base-hue), 100%, 5%, 0.85); 
-    padding: 12px 25px; 
-    border-radius: 50px; 
-    backdrop-filter: blur(10px); 
-    justify-content: center; /* Zentriert die Buttons horizontal */
-    gap: 10px;               /* Gibt den Buttons einen schönen Abstand zueinander */
-    margin-left: auto;       /* Zusammen mit margin-right: auto zentriert es */
-    margin-right: auto;      /* den ganzen Container selbst */
-    width: fit-content;      /* Die Leiste wird nur so breit wie die Buttons */
-}
-.controls-top, .controls-bottom { 
-    z-index: 100; 
-    display: flex; 
-    align-items: center; 
-
-    justify-content: center; /* Ändere space-around zu center */
-    gap: 20px;               /* Nutze gap für gleichmäßige Abstände */
-
-    background: hsla(var(--base-hue), 100%, 5%, 0.85); /* Passender Glas-Effekt */
-    padding: 10px; 
-    backdrop-filter: blur(10px); 
-}
-
-.controls-top { border-bottom: 1px solid hsla(0, 0%, 100%, 0.1); }
-.controls-bottom { border-top: 1px solid hsla(0, 0%, 100%, 0.1); }
-
-/* Das Inhaltsverzeichnis-Container */
-#toc-inject {
-    margin-top: 20px;
-    font-family: 'Lora', serif;
-}
-
-/* Alle Links im Inhaltsverzeichnis */
-#toc-inject a {
-    display: block; /* Jeder Link in eine eigene Zeile */
-    text-decoration: none;
+.page-content {
+    height: 100%; width: 100%;
+    overflow-y: auto;
+    font-size: var(--font-size); line-height: 1.7;
     color: var(--text-color);
-    padding: 6px 0;
-    border-bottom: 1px dotted hsla(var(--base-hue), 20%, 80%, 0.5);
-    transition: all 0.3s ease;
-    font-weight: normal; /* Standardmäßig normal */
+    text-align: justify;
+    hyphens: auto;
+}
+img {
+    max-width: 100%; max-height: var(--img-height);
+    display: block; margin: 25px auto;
+    border-radius: 5px;
+    border: 5px solid #fff;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+.book-image { max-height: var(--bimg-height); }
+
+/* Controls – fest am unteren Rand */
+.controls {
+    position: fixed;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    background: rgba(0,0,20,0.75);
+    padding: 10px 22px;
+    border-radius: 50px;
+    backdrop-filter: blur(10px);
+    transition: opacity 0.4s, transform 0.4s;
+    white-space: nowrap;
+}
+.controls {
+    opacity: 0.3;
+}
+.controls:hover {
+    opacity: 0.9;
+}
+body.zen-mode .controls {
+    opacity: 0;
+    transform: translateX(-50%) translateY(60px);
+    pointer-events: none;
 }
 
-/* 1. Hauptkapitel fett machen (Logik: Enthält oft das Wort "Kapitel" oder ist H1/H2 Ebene) */
-/* Da wir im TOC oft nur <a> haben, selektieren wir hier alle, 
-   aber überschreiben die Unterpunkte später */
+#page-info {
+    color: white;
+    margin: 0 12px;
+    font-size: 0.9rem;
+    min-width: 80px;
+    text-align: center;
+}
+button {
+    padding: 9px 16px;
+    cursor: pointer;
+    background: var(--accent-color);
+    color: #eeeeff;
+    border: none;
+    border-radius: 20px;
+    font-weight: bold;
+    margin: 0 4px;
+    transition: 0.3s;
+    font-size: 0.85rem;
+}
+button:hover { filter: brightness(1.25); }
+
+/* Inhaltsverzeichnis */
 #toc-inject a {
     font-weight: bold;
-    font-size: 1.1em;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    border-bottom: 1px dotted #ccc;
 }
-
-/* 2. Unterpunkte (h4-Entsprechungen) im Verzeichnis */
-/* Wir suchen nach Links, die tiefer verschachtelt sind oder 
-   kleinere Themen behandeln. Falls dein Skript Klassen wie 'toc-h4' vergibt: */
-#toc-inject a.toc-h4, 
-#toc-inject p + p a { /* Ein simpler Trick: aufeinanderfolgende kleine Absätze */
+#toc-inject li:has(h1), #toc-inject li:has(h2) { font-weight: 800; }
+#toc-inject li:has(h4) a {
     font-weight: normal;
-    font-size: 0.95em;
-    padding-left: 20px; /* Einrücken wie ein Tabulator */
-    border-bottom: none; /* Keine Linie bei Unterpunkten */
+    font-size: 0.9em;
+    padding-left: 20px;
 }
-
-/* 3. Der Hover-Effekt mit deiner Akzentfarbe */
-#toc-inject a:hover {
-    color: var(--color-h2); /* Dein Meeresblau/Cyan */
-    padding-left: 5px;      /* Kleiner Bewegungseffekt */
-    background: hsla(var(--base-hue), 50%, 90%, 0.3); /* Sanfter Hintergrund */
-}
-
-/* Seitenzahlen oder Rechtsbündigkeit (falls vorhanden) */
-#toc-inject a span {
-    float: right;
-    font-variant-numeric: tabular-nums;
-}
-
-/* ---- J -----*/
-
-.tab {
-    margin-left: 40px; /* Die Breite deines Tabulators */
-}
-.center {
-    text-align: center;
-    border-left: none; /* Optional: Entfernt den Seitenbalken, wenn es zentriert ist */
-    padding-left: 0;
-}
+#toc-inject a:hover { color: #b8860b; }
