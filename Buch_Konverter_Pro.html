@@ -60,6 +60,15 @@ body.zen-mode .controls:hover { opacity:1; transform:none; }
 #toc-inject li.t3 a, #toc-inject li.t4 a { font-weight:400; font-size:.9em; padding-left:20px; }
 #toc-inject h1,#toc-inject h2,#toc-inject h3,#toc-inject h4,#toc-inject h5,#toc-inject h6 { margin:0; font:inherit; }
 
+/* Smartphone-Modus: eine Seite, Leiste einzeilig zum Wischen */
+body.phone .controls { flex-wrap:nowrap; overflow-x:auto; justify-content:flex-start; border-radius:22px; padding:6px 10px; width:calc(100vw - 8px); max-width:none; scrollbar-width:none; }
+body.phone .controls::-webkit-scrollbar { display:none; }
+body.phone .controls button { white-space:nowrap; flex:none; padding:8px 12px; font-size:.78rem; }
+body.phone #page-info { flex:none; white-space:nowrap; min-width:70px; margin:0 6px; font-size:.8rem; }
+body.phone #wrapper { padding:2px; }
+#book.single { position:relative; overflow:hidden; border-radius:6px; }
+#book.single .page { position:absolute; inset:0; display:none; }
+
 /* Einstellungen */
 .settings { text-align:left; margin-top:1.6rem; }
 .settings h2 { font:700 1.3rem 'Playfair Display',serif; margin:0 0 .3rem; }
@@ -91,12 +100,14 @@ body.zen-mode .controls:hover { opacity:1; transform:none; }
   <button id="btn-full-start">⛶ Vollbild</button>
   <div class="card">
     <h1>Vom Dokument zum Buch</h1>
-    <p class="sub">Wähle eine Word-Datei. Sie wird direkt in deinem Browser in ein Buch zum Blättern verwandelt – nichts wird hochgeladen.</p>
-    <div class="drop" id="drop" tabindex="0" role="button" aria-label="DOCX-Datei auswählen">
-      <strong>DOCX-Datei hier ablegen</strong>
+    <p class="sub">Wähle eine Word-Datei (.docx) oder ein gespeichertes Buch (.json). Sie wird direkt in deinem Browser in ein Buch zum Blättern verwandelt – nichts wird hochgeladen.</p>
+    <div class="drop" id="drop" tabindex="0" role="button" aria-label="DOCX- oder JSON-Datei auswählen">
+      <strong>DOCX- oder JSON-Datei hier ablegen</strong>
       <span>oder klicken, um eine Datei zu wählen</span>
     </div>
-    <input type="file" id="file" accept=".docx" hidden>
+    <input type="file" id="file" accept=".docx,.json" hidden>
+    <input type="file" id="dirinput" webkitdirectory hidden>
+    <div class="field"><button id="btn-open-dir">📁 Buchordner öffnen (JSON + Bilder)</button></div>
     <div class="field">
       <input type="text" id="title" placeholder="Buchtitel (optional)" aria-label="Buchtitel">
     </div>
@@ -132,9 +143,11 @@ body.zen-mode .controls:hover { opacity:1; transform:none; }
   <button id="btn-dark-mode">🌓 Dark</button>
   <button id="btn-zen">🧘 Zen</button>
   <button id="btn-full">⛶ Vollbild</button>
+  <button id="btn-phone">📱 Smartphone</button>
   <button id="btn-set">⚙ Einstellungen</button>
   <button id="btn-export">💾 HTML speichern</button>
   <button id="btn-export-dir">📁 Mit Bilderordner speichern</button>
+  <button id="btn-json">📄 JSON speichern</button>
 </div>
 <div id="wrapper" class="hidden"><div id="book"></div></div>
 <div id="modal" class="hidden"><div class="box"><button id="modal-close" aria-label="Schließen">✕</button><div id="modal-body"></div></div></div>
@@ -147,8 +160,11 @@ body.zen-mode .controls:hover { opacity:1; transform:none; }
   const SRC = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;   // Vorlage für den HTML-Export
   const $ = id => document.getElementById(id);
   const status = t => $('status').textContent = t;
-  let lastHtml = null, pageFlip = null, rawPages = [], allPages = [], texts = [], bookTitle = '', portrait = false, isReading = false;
+  let lastW = 0, lastH = 0, lastHtml = null, pageFlip = null, rawPages = [], allPages = [], texts = [], bookTitle = '', portrait = false, isReading = false;
   const synth = window.speechSynthesis;
+  const imgMap = new Map();   // 'images/bild_1.jpg' → { url, blob } (aus geöffnetem Buchordner)
+  function clearImgs() { imgMap.forEach(e => URL.revokeObjectURL(e.url)); imgMap.clear(); }
+  const resolveImgs = h => imgMap.size ? h.replace(/src="(images\/[^"]+)"/g, (m, r) => imgMap.has(r) ? `src="${imgMap.get(r).url}"` : m) : h;
 
   /* ---------- Datei laden ---------- */
   const drop = $('drop'), fileInput = $('file');
@@ -160,9 +176,10 @@ body.zen-mode .controls:hover { opacity:1; transform:none; }
   fileInput.addEventListener('change', () => { if (fileInput.files[0]) handle(fileInput.files[0]); });
 
   async function handle(file) {
-    if (!/\.docx$/i.test(file.name)) { status('Bitte eine .docx-Datei wählen.'); return; }
+    if (/\.json$/i.test(file.name)) return handleJson(file);
+    if (!/\.docx$/i.test(file.name)) { status('Bitte eine .docx- oder .json-Datei wählen.'); return; }
     if (typeof mammoth === 'undefined') { status('Mammoth konnte nicht geladen werden (Internetverbindung?).'); return; }
-    status('Dokument wird umgewandelt …');
+    status('Dokument wird umgewandelt …'); clearImgs();
     try {
       const result = await mammoth.convertToHtml({ arrayBuffer: await file.arrayBuffer() });
       lastHtml = result.value;
@@ -175,6 +192,55 @@ body.zen-mode .controls:hover { opacity:1; transform:none; }
       status('');
     } catch (err) { console.error(err); status('Fehler beim Umwandeln: ' + err.message); }
   }
+
+  async function handleJson(file, keepImgs) {
+    status('Datei wird geladen …');
+    if (!keepImgs) clearImgs();
+    try {
+      const d = JSON.parse(await file.text());
+      if (d.format !== 'buch-konverter') throw new Error('Das ist keine Buch-JSON dieses Konverters.');
+      if (d.settings) { S = { ...DEF, ...d.settings }; syncUI(); cssApply(); saveCfg(); }
+      let pages;
+      if (d.source) {                                   // Originaltext vorhanden → Seiten werden neu aufgeteilt
+        lastHtml = d.source;
+        const o = d.pag || {};
+        $('limit').value = o.limit || 4000;
+        $('opt-imgs').checked = o.imgs !== false; $('opt-hash').checked = o.hash !== false; $('opt-nums').checked = o.nums !== false;
+        pages = paginate(lastHtml, pagOpts());
+        $('btn-repag').classList.remove('hidden');
+      } else {                                          // nur fertige Seiten
+        lastHtml = null; pages = d.pages;
+        $('btn-repag').classList.add('hidden');
+      }
+      if (!Array.isArray(pages) || !pages.length) throw new Error('Die Datei enthält keine Seiten.');
+      bookTitle = d.title || file.name.replace(/\.json$/i, '');
+      $('title').value = bookTitle; document.title = bookTitle;
+      openBook(pages);
+      status('');
+      const first = !keepImgs && pages.map(p => p.h).join('').match(/src="(images\/[^"]+)"/);
+      if (first) {                                      // liegen die Bilder neben dieser Datei?
+        const t = new Image();
+        t.onerror = () => alert('Die Bilder dieses Buchs liegen im Ordner „images“ und wurden nicht gefunden.\nÖffne das Buch bitte über „📁 Buchordner öffnen“ auf der Startseite.');
+        t.src = first[1];
+      }
+    } catch (err) { console.error(err); status('Fehler beim Laden: ' + err.message); }
+  }
+
+  $('btn-open-dir').onclick = () => $('dirinput').click();
+  $('dirinput').addEventListener('change', e => {
+    const files = [...e.target.files]; e.target.value = '';
+    if (!files.length) return;
+    const jsons = files.filter(f => /\.json$/i.test(f.name) && f.webkitRelativePath.split('/').length === 2);
+    if (!jsons.length) { status('Im Ordner wurde keine Buch-JSON gefunden.'); return; }
+    let jf = jsons[0];
+    if (jsons.length > 1) {
+      const i = parseInt(prompt('Mehrere JSON-Dateien gefunden:\n' + jsons.map((f, k) => `${k + 1}: ${f.name}`).join('\n') + '\nNummer eingeben:', '1')) - 1;
+      if (!jsons[i]) return; jf = jsons[i];
+    }
+    clearImgs();
+    files.forEach(f => { const m = f.webkitRelativePath.match(/^[^/]+\/images\/([^/]+)$/); if (m) imgMap.set('images/' + m[1], { url: URL.createObjectURL(f), blob: f }); });
+    handleJson(jf, true);
+  });
 
   function pagOpts() {
     return { limit: Math.max(1000, parseInt($('limit').value) || 4000),
@@ -214,12 +280,48 @@ body.zen-mode .controls:hover { opacity:1; transform:none; }
     renderBook(0);
   }
 
+  /* Einseitige Ansicht für den Smartphone-Modus: gleiche Schnittstelle wie PageFlip, aber immer genau eine Seite, Wischen links/rechts */
+  class SinglePager {
+    constructor(el, w, h) {
+      this.el = el; this.i = 0; this.cbs = []; this.pages = [];
+      el.classList.add('single'); el.style.width = w + 'px'; el.style.height = h + 'px';
+      let t = null;
+      el.addEventListener('touchstart', e => { const p = e.changedTouches[0]; t = { x: p.clientX, y: p.clientY }; }, { passive: true });
+      el.addEventListener('touchend', e => {
+        if (!t) return; const p = e.changedTouches[0]; const dx = p.clientX - t.x, dy = p.clientY - t.y; t = null;
+        if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) dx < 0 ? this.flipNext() : this.flipPrev();
+      }, { passive: true });
+    }
+    loadFromHTML(list) { this.pages = [...list]; this.pages.forEach(p => p.style.display = 'none'); if (this.pages[0]) this.pages[0].style.display = 'block'; }
+    getCurrentPageIndex() { return this.i; }
+    go(n, dir, silent) {
+      n = Math.max(0, Math.min(this.pages.length - 1, n)); if (n === this.i) return;
+      const out = this.pages[this.i], inn = this.pages[n]; this.i = n;
+      inn.style.display = 'block';
+      const ms = dir && !matchMedia('(prefers-reduced-motion: reduce)').matches ? 240 : 0;
+      if (ms) {
+        inn.animate([{ transform: `translateX(${dir * 100}%)` }, { transform: 'none' }], { duration: ms, easing: 'ease-out' });
+        out.animate([{ transform: 'none' }, { transform: `translateX(${-dir * 100}%)` }], { duration: ms, easing: 'ease-out' })
+          .onfinish = () => { if (out !== this.pages[this.i]) out.style.display = 'none'; };
+      } else out.style.display = 'none';
+      if (!silent) this.cbs.forEach(f => f({ data: n }));
+    }
+    flipNext() { this.go(this.i + 1, 1); }
+    flipPrev() { this.go(this.i - 1, -1); }
+    flip(n) { this.go(n, n > this.i ? 1 : -1); }
+    turnToPage(n) { this.go(n, 0, true); }
+    on(ev, fn) { if (ev === 'flip') this.cbs.push(fn); }
+    destroy() { this.el.remove(); }
+  }
+
   function renderBook(startPage) {
     if (pageFlip) { try { pageFlip.destroy(); } catch (e) {} }
     stopReading();
-    const old = $('book'); const fresh = document.createElement('div'); fresh.id = 'book';
-    old.replaceWith(fresh);
-    fresh.innerHTML = allPages.map(p => `<div class="page"><div class="page-content${p.img ? ' img-page' : ''}">${p.h}</div></div>`).join('');
+    // PageFlip.destroy() entfernt den Container aus dem DOM – deshalb jedes Mal einen frischen anlegen
+    const old = $('book'); if (old) old.remove();
+    const fresh = document.createElement('div'); fresh.id = 'book';
+    $('wrapper').appendChild(fresh);
+    fresh.innerHTML = allPages.map(p => `<div class="page"><div class="page-content${p.img ? ' img-page' : ''}">${resolveImgs(p.h)}</div></div>`).join('');
     fresh.querySelectorAll('img').forEach(i => i.title = 'Zum Vergrößern anklicken');
 
     const contents = [...fresh.querySelectorAll('.page-content')];
@@ -236,12 +338,15 @@ body.zen-mode .controls:hover { opacity:1; transform:none; }
     if (tocBox) tocBox.innerHTML = toc + '</ul>';
     texts[1] = tocBox ? tocBox.innerText : '';
 
-    portrait = window.innerWidth < 800;
-    const h = Math.floor(window.innerHeight * S.pageH / 100 - 20);
-    const w = Math.floor(portrait ? Math.min(window.innerWidth * 0.94, h * 0.75) : Math.min(window.innerWidth * S.pageW / 100, h * 0.9));
-    pageFlip = new St.PageFlip(fresh, {
+    portrait = isPhone(); lastW = window.innerWidth; lastH = window.innerHeight;
+    document.body.classList.toggle('phone', portrait); cssApply();
+    $('btn-phone').classList.toggle('hidden', window.innerWidth < 800);   // auf echten Smartphones ist der Modus automatisch aktiv
+    $('btn-phone').textContent = S.phone ? '🖥 Buch-Ansicht' : '📱 Smartphone';
+    const h = portrait ? Math.floor(window.innerHeight - $('controls').offsetHeight - 28) : Math.floor(window.innerHeight * S.pageH / 100 - 20);
+    const w = Math.floor(portrait ? Math.min(window.innerWidth * 0.98, h * 0.75) : Math.min(window.innerWidth * S.pageW / 100, h * 0.9));
+    pageFlip = portrait ? new SinglePager(fresh, w, h) : new St.PageFlip(fresh, {
       width: w, height: h, size: 'fixed', minWidth: 200, maxWidth: 1200, minHeight: 300, maxHeight: 1600,
-      drawShadow: true, showCover: true, usePortrait: portrait, mobileScrollSupport: false, disableFlipByClick: true
+      drawShadow: true, showCover: true, usePortrait: false, mobileScrollSupport: false, disableFlipByClick: true
     });
     pageFlip.loadFromHTML(fresh.querySelectorAll('.page'));
     pageFlip.on('flip', e => info(e.data));
@@ -328,9 +433,20 @@ body.zen-mode .controls:hover { opacity:1; transform:none; }
     setTimeout(() => URL.revokeObjectURL(a.href), 4000);
   }
 
+  async function inlineRefs(h) {
+    for (const r of new Set([...h.matchAll(/src="(images\/[^"]+)"/g)].map(m => m[1]))) {
+      const e = imgMap.get(r); if (!e) continue;
+      const uri = await new Promise(res => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.readAsDataURL(e.blob); });
+      h = h.split(`src="${r}"`).join(`src="${uri}"`);
+    }
+    return h;
+  }
   $('btn-export').onclick = async () => {
     const btn = $('btn-export'); btn.textContent = '… wird erstellt'; btn.disabled = true;
-    try { download(new Blob([await buildHtml(rawPages)], { type: 'text/html' }), slug() + '.html'); }
+    try {
+      const pages = imgMap.size ? await Promise.all(rawPages.map(async p => ({ ...p, h: await inlineRefs(p.h) }))) : rawPages;
+      download(new Blob([await buildHtml(pages)], { type: 'text/html' }), slug() + '.html');
+    }
     catch (err) { alert('Export fehlgeschlagen: ' + err.message); }
     btn.textContent = '💾 HTML speichern'; btn.disabled = false;
   };
@@ -342,22 +458,23 @@ body.zen-mode .controls:hover { opacity:1; transform:none; }
     const x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height); x.drawImage(img, 0, 0);
     return new Promise((res, rej) => c.toBlob(b => b ? res(b) : rej(new Error('toBlob')), 'image/jpeg', q));
   }
-  async function externalizeImages(pages, q, onProgress) {
-    const map = new Map(), files = []; let n = 0, failed = 0;
-    const out = [];
-    for (const p of pages) {
-      let h = p.h;
-      const uris = [...new Set([...p.h.matchAll(/src="(data:image\/[^"]+)"/g)].map(m => m[1]))];
-      for (const u of uris) {
+  async function externalize(strs, q, onProgress) {            // data:-Bilder → JPG-Dateien + Verweis „images/bild_N.jpg“
+    const map = new Map(), files = [], seen = new Set(), out = []; let n = 0, failed = 0;
+    for (const str of strs) {
+      let h = str;
+      for (const u of new Set([...h.matchAll(/src="(data:image\/[^"]+)"/g)].map(m => m[1]))) {
         if (!map.has(u)) {
-          try { const blob = await toJpg(u, q); n++; map.set(u, `images/bild_${n}.jpg`); files.push({ name: `images/bild_${n}.jpg`, blob }); onProgress && onProgress(n); }
+          try { const blob = await toJpg(u, q); n++; const nm = `images/bild_${n}.jpg`; map.set(u, nm); seen.add(nm); files.push({ name: nm, blob }); onProgress && onProgress(n); }
           catch (e) { map.set(u, null); failed++; }
         }
         const r = map.get(u); if (r) h = h.split(u).join(r);
       }
-      out.push({ ...p, h });
+      for (const m of h.matchAll(/src="(images\/[^"]+)"/g)) {   // Bilder eines geöffneten Buchordners mitnehmen
+        const r = m[1]; if (!seen.has(r) && imgMap.has(r)) { seen.add(r); files.push({ name: r, blob: imgMap.get(r).blob }); }
+      }
+      out.push(h);
     }
-    return { pages: out, files, failed };
+    return { out, files, failed };
   }
   function makeZip(files) {                                     // einfaches ZIP ohne Kompression (JPGs sind schon komprimiert)
     const te = new TextEncoder(), chunks = [], central = []; let offset = 0;
@@ -383,34 +500,70 @@ body.zen-mode .controls:hover { opacity:1; transform:none; }
     return new Blob([...chunks, ...central, new Uint8Array(end.buffer)], { type: 'application/zip' });
   }
 
-  $('btn-export-dir').onclick = async () => {
-    const btn = $('btn-export-dir'), label = btn.textContent;
-    btn.disabled = true;
-    try {
-      let dir = null;
-      if (window.showDirectoryPicker) {                          // direkt in einen Ordner schreiben (Chrome, Edge)
-        try { dir = await showDirectoryPicker({ mode: 'readwrite' }); }
-        catch (e) { if (e.name === 'AbortError') return; dir = null; }
+  async function pickDir() {
+    if (!window.showDirectoryPicker) return null;
+    try { return await showDirectoryPicker({ mode: 'readwrite' }); }
+    catch (e) { if (e.name === 'AbortError') throw e; return null; }
+  }
+  async function prepare(onProgress) {
+    const strs = rawPages.map(p => p.h); if (lastHtml) strs.push(lastHtml);
+    const { out, files, failed } = await externalize(strs, (S.jpgq || 85) / 100, onProgress);
+    return { pages: rawPages.map((p, i) => ({ ...p, h: out[i] })), source: lastHtml ? out[rawPages.length] : null, files, failed };
+  }
+  function jsonText(pages, source) {
+    const d = { format: 'buch-konverter', version: 1, title: bookTitle, settings: S };
+    if (source != null) { d.source = source; d.pag = pagOpts(); } else d.pages = pages;
+    if ((source != null ? source : pages.map(p => p.h).join('')).includes('src="images/')) d.images = 'images/';
+    return JSON.stringify(d);
+  }
+  // Schreibt Textdateien + Bilder in den Ordner (vorhandene gleich große Bilder werden nicht erneut gespeichert) – oder als ZIP
+  async function writeBundle(textFiles, imgFiles, dir) {
+    const names = textFiles.map(t => t.name).join(' und ');
+    if (dir) {
+      const write = async (d, name, data) => { const fh = await d.getFileHandle(name, { create: true }); const w = await fh.createWritable(); await w.write(data); await w.close(); };
+      let skipped = 0;
+      if (imgFiles.length) {
+        const idir = await dir.getDirectoryHandle('images', { create: true });
+        for (const f of imgFiles) {
+          const nm = f.name.replace('images/', '');
+          try { const ex = await (await idir.getFileHandle(nm)).getFile(); if (ex.size === f.blob.size) { skipped++; continue; } } catch (e) {}
+          await write(idir, nm, f.blob);
+        }
       }
+      for (const t of textFiles) await write(dir, t.name, t.text);
+      return `Gespeichert: ${names}` + (imgFiles.length ? `\nOrdner „images“: ${imgFiles.length - skipped} Bilder neu geschrieben, ${skipped} schon vorhanden (nicht erneut gespeichert).` : '');
+    }
+    const entries = textFiles.map(t => ({ name: t.name, data: new TextEncoder().encode(t.text) }));
+    for (const f of imgFiles) entries.push({ name: f.name, data: new Uint8Array(await f.blob.arrayBuffer()) });
+    download(makeZip(entries), slug() + '.zip');
+    return `Dein Browser kann keine Ordner beschreiben – deshalb kam eine ZIP-Datei (${names} + Ordner „images“). Bitte entpacken.`;
+  }
+  const failNote = n => n ? `\n${n} Bild(er) konnten nicht in JPG umgewandelt werden und bleiben eingebettet.` : '';
+
+  $('btn-export-dir').onclick = async () => {
+    const btn = $('btn-export-dir'), label = btn.textContent; btn.disabled = true;
+    try {
+      const dir = await pickDir();
       btn.textContent = '… Bilder werden umgewandelt';
-      const { pages, files, failed } = await externalizeImages(rawPages, (S.jpgq || 85) / 100, n => btn.textContent = `… Bild ${n}`);
+      const { pages, source, files, failed } = await prepare(n => btn.textContent = `… Bild ${n}`);
       btn.textContent = '… Buch wird erstellt';
       const html = await buildHtml(pages);
-      let msg;
-      if (dir) {
-        const write = async (d, name, data) => { const fh = await d.getFileHandle(name, { create: true }); const w = await fh.createWritable(); await w.write(data); await w.close(); };
-        if (files.length) { const idir = await dir.getDirectoryHandle('images', { create: true }); for (const f of files) await write(idir, f.name.replace('images/', ''), f.blob); }
-        await write(dir, 'index.html', html);
-        msg = `Gespeichert: index.html` + (files.length ? ` und ${files.length} Bilder im Ordner „images“.` : '.');
-      } else {
-        const entries = [{ name: 'index.html', data: new TextEncoder().encode(html) }];
-        for (const f of files) entries.push({ name: f.name, data: new Uint8Array(await f.blob.arrayBuffer()) });
-        download(makeZip(entries), slug() + '.zip');
-        msg = 'Dein Browser kann keine Ordner beschreiben – deshalb kam eine ZIP-Datei (index.html + Ordner „images“). Bitte entpacken.';
+      alert(await writeBundle([{ name: 'index.html', text: html }, { name: slug() + '.json', text: jsonText(pages, source) }], files, dir) + failNote(failed));
+    } catch (err) { if (err.name === 'AbortError') return; console.error(err); alert('Speichern fehlgeschlagen: ' + err.message); }
+    finally { btn.textContent = label; btn.disabled = false; }
+  };
+
+  $('btn-json').onclick = async () => {
+    const btn = $('btn-json'), label = btn.textContent; btn.disabled = true;
+    try {
+      if (!rawPages.some(p => /src="(data:image\/|images\/)/.test(p.h))) {      // keine Bilder → einfache Datei
+        download(new Blob([jsonText(rawPages, lastHtml)], { type: 'application/json' }), slug() + '.json'); return;
       }
-      if (failed) msg += `\n${failed} Bild(er) konnten nicht in JPG umgewandelt werden und bleiben in der HTML-Datei eingebettet.`;
-      alert(msg);
-    } catch (err) { console.error(err); alert('Speichern fehlgeschlagen: ' + err.message); }
+      const dir = await pickDir();
+      btn.textContent = '… Bilder werden umgewandelt';
+      const { pages, source, files, failed } = await prepare(n => btn.textContent = `… Bild ${n}`);
+      alert(await writeBundle([{ name: slug() + '.json', text: jsonText(pages, source) }], files, dir) + failNote(failed));
+    } catch (err) { if (err.name === 'AbortError') return; console.error(err); alert('Speichern fehlgeschlagen: ' + err.message); }
     finally { btn.textContent = label; btn.disabled = false; }
   };
 
@@ -422,7 +575,7 @@ body.zen-mode .controls:hover { opacity:1; transform:none; }
     if (!portrait && i > 0 && i + 1 < texts.length) txt += ' ' + texts[i + 1];
     const u = new SpeechSynthesisUtterance(txt); u.lang = 'de-DE'; u.rate = S.rate;
     u.onend = () => {
-      if (isReading && i + 2 < texts.length) { pageFlip.flipNext(); setTimeout(() => isReading && speak(), 1200); }
+      if (isReading && i + (portrait ? 1 : 2) < texts.length) { pageFlip.flipNext(); setTimeout(() => isReading && speak(), 1200); }
       else stopReading();
     };
     synth.speak(u);
@@ -434,12 +587,14 @@ body.zen-mode .controls:hover { opacity:1; transform:none; }
   };
 
   let rt; window.addEventListener('resize', () => {
-    if (!pageFlip) return; clearTimeout(rt);
+    if (!pageFlip) return;
+    if (portrait && window.innerWidth === lastW && Math.abs(window.innerHeight - lastH) < 160) return;   // Adressleiste auf dem Handy
+    clearTimeout(rt);
     rt = setTimeout(() => renderBook(pageFlip.getCurrentPageIndex()), 300);
   });
 
   /* ---------- Einstellungen ---------- */
-  const DEF = { pageH: 80, pageW: 44, pad: 56, paper: '#fdfaf3', font: "'Lora',Georgia,serif", fs: 14.5, lh: 1.45, align: 'justify', imgw: 100, imgh: 70, frame: true, rate: 1, jpgq: 85 };
+  const DEF = { pageH: 80, pageW: 44, pad: 56, paper: '#fdfaf3', font: "'Lora',Georgia,serif", fs: 14.5, lh: 1.45, align: 'justify', imgw: 100, imgh: 70, frame: true, rate: 1, jpgq: 85, phone: false };
   const FONTS = [["'Lora',Georgia,serif", 'Lora (Standard)'], ["'Playfair Display',Georgia,serif", 'Playfair Display'], ['Georgia,serif', 'Georgia'],
     ["'Times New Roman',Times,serif", 'Times New Roman'], ["Palatino,'Palatino Linotype',serif", 'Palatino'], ['Arial,Helvetica,sans-serif', 'Arial'],
     ['Verdana,sans-serif', 'Verdana'], ["'Trebuchet MS',sans-serif", 'Trebuchet'], ["'Courier New',monospace", 'Schreibmaschine'], ["'Comic Sans MS',cursive", 'Comic Sans']];
@@ -466,10 +621,11 @@ body.zen-mode .controls:hover { opacity:1; transform:none; }
   try { Object.assign(S, JSON.parse(localStorage.getItem('buch_cfg') || '{}')); } catch (e) {}
   const saveCfg = () => { try { localStorage.setItem('buch_cfg', JSON.stringify(S)); } catch (e) {} };
 
+  function isPhone() { return !!S.phone || window.innerWidth < 800; }
   function cssApply() {
     const r = document.documentElement.style;
     r.setProperty('--fs', S.fs + 'px'); r.setProperty('--lh', S.lh); r.setProperty('--ff', S.font); r.setProperty('--ta', S.align);
-    r.setProperty('--pad', S.pad + 'px'); r.setProperty('--paper', S.paper);
+    r.setProperty('--pad', (isPhone() ? Math.min(S.pad, 28) : S.pad) + 'px'); r.setProperty('--paper', S.paper);
     r.setProperty('--imgw', S.imgw + '%'); r.setProperty('--imgh', S.imgh);
     r.setProperty('--imgb', S.frame ? '5px' : '0'); r.setProperty('--imgs', S.frame ? '0 5px 15px rgba(0,0,0,.3)' : 'none');
   }
@@ -517,6 +673,7 @@ body.zen-mode .controls:hover { opacity:1; transform:none; }
   function closeSettings() { modal.classList.add('hidden'); home.append(panel); }
   $('btn-set').onclick = () => modal.classList.contains('hidden') ? openSettings() : closeSettings();
   $('modal-close').onclick = closeSettings;
+  $('btn-phone').onclick = () => { S.phone = !S.phone; saveCfg(); rerender(); };
   $('btn-reset').onclick = () => { S = { ...DEF }; syncUI(); cssApply(); saveCfg(); rerender(); };
   $('btn-repag').onclick = () => {
     if (!lastHtml) return;
