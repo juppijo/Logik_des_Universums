@@ -120,7 +120,7 @@ body.phone #wrapper { padding:2px; }
           <div class="opts">
             <label><input type="checkbox" id="opt-imgs" checked> Jedes Bild auf eine eigene Seite stellen</label>
             <label><input type="checkbox" id="opt-hash" checked> „###“ im Text als Seitenumbruch erkennen</label>
-            <label><input type="checkbox" id="opt-nums" checked> Alleinstehende Seitenzahlen (1–999) als Seitenumbruch erkennen</label>
+            <label><input type="checkbox" id="opt-nums" checked> Alleinstehende Seitenzahlen (1–999) erkennen – Umbruch erst nach der Zahl</label>
           </div>
           <button id="btn-repag" class="hidden">Seiten neu aufteilen</button>
         </div>
@@ -258,6 +258,9 @@ body.phone #wrapper { padding:2px; }
       const s = el.outerHTML;
       const manual = (o.hash && s.includes('###')) || (o.nums && s.includes('@@PB@@'));
       const hasImg = el.tagName === 'IMG' || !!el.querySelector('img');
+      if (o.nums && s.includes('@@PB@@') && !(o.hash && s.includes('###'))) {   // Seitenzahl bleibt am Ende der Seite, erst danach beginnt die nächste
+        cur += strip(s); flush(); continue;
+      }
       if (manual) { flush(); pages.push({ h: strip(s), img: o.imgs && hasImg }); continue; }
       if (o.imgs && hasImg) { flush(); pages.push({ h: s, img: true }); continue; }
       const len = s.replace(/src="data:[^"]*"/g, '').length;      // Bild-Daten zählen nicht mit
