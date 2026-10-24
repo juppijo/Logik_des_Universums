@@ -1,8 +1,8 @@
-![Bild 1](Images/bild_1.jpg)
+![Bild 1](https://juppijo.github.io/Logik_des_Universums/images/bild_1.jpg)
 
 Von Zenjio
 
-![Bild 2](Images/bild_2.jpg)
+![Bild 2](https://juppijo.github.io/Logik_des_Universums/images/bild_2.jpg)
 
 *Thích Nhất Hạnh*
 
@@ -46,7 +46,7 @@ Wenn die Entwicklung so weitergeht und das bessere „Gute“ überlebt, so müs
 
 #### 
 
-![Bild 3](Images/bild_3.jpg)
+![Bild 3](https://juppijo.github.io/Logik_des_Universums/images/bild_3.jpg)
 
 ? — Urknall ---------- Welt-------- Perfektion.
 
@@ -72,7 +72,7 @@ Also müsste die Menschheit immer besser werden und eines Tages in den „Himmel
 
 Unsere Masse, woraus wir bestehen (Teilchen, Atome, Moleküle) sind schon so uralt wie das ganze Universum und auch wenn wir sterben, existiert unsere Masse weiter bis in alle Ewigkeit, wir werden immer ein Teil des Universums sein. So füllt das Leben als Mensch nur eine kleine Zeitspanne der Ewigkeit aus. (Doch trotzdem nehmen wir jede Sekunde bewusst wahr, empfinden sie.
 
-![Bild 4](Images/bild_4.jpg)
+![Bild 4](https://juppijo.github.io/Logik_des_Universums/images/bild_4.jpg)
 
 #### Leben: 
 
@@ -96,7 +96,7 @@ Wenn wir sterben, zerfällt unser Körper in viele kleine Teile, doch keines dav
 
 Ganz einfach, der größte Teil wird von uns Menschen immer weitergegeben (gelernt), ein weiterer großer Teil wird durch die Chromosomen (DNS – DNA) vererbt und ein geringer Teil wird vielleicht vergessen. So kommt es, dass das Niveau an Intelligenz der Menschheit ständig wächst. z. B. kann heute schon ein Sechzehnjähriger wissen, was E=m\*c² bedeutet, wo Einstein in diesem Alter vielleicht nur davon träumte.
 
-![Bild 5](Images/bild_5.jpg)
+![Bild 5](https://juppijo.github.io/Logik_des_Universums/images/bild_5.jpg)
 
 #### Wo fängt die Intelligenz an? (Ursprung des Menschen).
 
@@ -118,7 +118,7 @@ Bei der Geburt eines Menschen fängt er an, sein Bewußtsein zu entwickeln, nach
 
 Mit der Zeit entstand in der Evolution die Möglichkeit, seine Umgebung durch Sinne wahrzunehmen. Diese Sinneswahrnehmung verfeinerte sich und es entstand die Wahrnehmung der Wahrnehmung . Dadurch entstand Bewusstsein. Bewusstsein ist eine logische Folgerung der Wahrnehmung.
 
-![Bild 6](Images/bild_6.jpg)
+![Bild 6](https://juppijo.github.io/Logik_des_Universums/images/bild_6.jpg)
 
 #### Zusammenhänge zweier Leben.
 
@@ -140,7 +140,7 @@ Glücklich ist man dann, wenn alle Grundbedürfnisse erfüllt sind.
 
 Es ist ein Bedürfnis der Menschen zu etwas nützlich zu sein (Wertvoll sein), wenn man daran glaubt, dass unser Leben allen weiteren dient und wir selbst sogar daran teilhaben dürfen, dann müsste das doch ein beruhigendes Glücksgefühl bewirken. Ein anderes Bedürfnis ist es, geliebt zu werden. Geliebt wird man nur, wenn man fähig ist, auch andere zu lieben. Der Weg dorthin ist jedoch sehr kompliziert und schwierig und hat damit zu tun, welche Prioritäten und Werte man sich im Leben setzt.
 
-![Bild 7](Images/bild_7.jpg)
+![Bild 7](https://juppijo.github.io/Logik_des_Universums/images/bild_7.jpg)
 
 #### Unsere Zeit.
 
@@ -154,7 +154,7 @@ Es ist nicht leicht zu glauben, „Sein" sei wichtiger als „Haben”, besonder
 
 Erleuchtung erlangt man am besten während einer Meditation, sie kann aber auch spontan entstehen.
 
-![Bild 8](Images/bild_8.jpg)
+![Bild 8](https://juppijo.github.io/Logik_des_Universums/images/bild_8.jpg)
 
 Wenn Körper und Geist sehr entspannt sind, keinen Stress, keine Anspannung, keine Schmerzen, keine Ängste, keine Sorgen und kein Leiden vorhanden sind, dann befindet sich der Geist in einem Zustand, wo erkennen leicht fällt “ Alpha-Zustand \* “.
 
@@ -178,7 +178,7 @@ Mit „Gute“ meine ich hier das Heilsame, das, was uns und anderen guttut. Man
 
 Nicht Gott ist verantwortlich für das Übel der Welt, sondern wir Menschen. Nur wir Menschen können das Übel verhindern.
 
-![Bild 9](Images/bild_9.jpg)
+![Bild 9](https://juppijo.github.io/Logik_des_Universums/images/bild_9.jpg)
 
 #### Liebe.
 
@@ -186,7 +186,7 @@ Nicht Gott ist verantwortlich für das Übel der Welt, sondern wir Menschen. Nur
 
 Siehe: Wahre Liebe.
 
-![Bild 10](Images/bild_10.jpg)
+![Bild 10](https://juppijo.github.io/Logik_des_Universums/images/bild_10.jpg)
 
 #### Sorge dich nicht, lebe.
 
@@ -218,7 +218,7 @@ Der Zen Buddhismus ist eine Strömung des Buddhismus, die die Meditation als zen
 
 Ohmmmmmmmmmmmmmmmmmmm ...:-)
 
-![Bild 11](Images/bild_11.jpg)
+![Bild 11](https://juppijo.github.io/Logik_des_Universums/images/bild_11.jpg)
 
 #### Die Seele
 
@@ -240,7 +240,7 @@ Glauben und Ideale bestimmen unsere Werte. Es ist daher sinnvoll, zu erforschen,
 
 Es gibt “**Haben**”, “**Tun**” und “**Sein**” Werte.
 
-![Bild 12](Images/bild_12.jpg)
+![Bild 12](https://juppijo.github.io/Logik_des_Universums/images/bild_12.jpg)
 
 1.  Im Leben gibt es Dinge, die konstant und unveränderlich sind, dann gibt es Dinge, die man verändern kann.
 
@@ -302,7 +302,7 @@ Verständnis und Liebe sind Werte, die alle Dogmen transzendieren. Wenn unsere A
 
 4.  Gleichmut.
 
-![Bild 13](Images/bild_13.jpg)
+![Bild 13](https://juppijo.github.io/Logik_des_Universums/images/bild_13.jpg)
 
 *4 Aspekte der wahren Liebe in uns selbst und in allem um uns herum.*
 
@@ -544,7 +544,7 @@ Der Buddha hat im Satipatthana Sutta die „vier Grundlagen der Achtsamkeit“ g
 
 4\. Achtsamkeit auf die Geistesobjekte (oder Gedanken-Formationen/Muster: Objekte und Dinge, die im Moment wahrgenommen werden).
 
-![Bild 14](Images/bild_14.jpg)
+![Bild 14](https://juppijo.github.io/Logik_des_Universums/images/bild_14.jpg)
 
 **Ego, Karma und Charisma.**
 
@@ -566,7 +566,7 @@ Eine Person mit einem negativen Ego ist eher in der Lage, anderen Menschen zu sc
 
 Letztendlich hängt es von jedem Einzelnen ab, wie er sein Ego einsetzt. Ein gesundes Ego kann uns zu positivem Handeln motivieren und uns dabei helfen, unsere Ziele zu erreichen. Ein negatives Ego hingegen kann uns zu negativem Handeln verleiten und uns daran hindern, unser volles Potenzial zu entfalten.
 
-![Bild 15](Images/bild_15.jpg)
+![Bild 15](https://juppijo.github.io/Logik_des_Universums/images/bild_15.jpg)
 
 **Innerer Frieden**
 
@@ -622,7 +622,7 @@ Beende deine Meditation mit einem Lächeln und einem tiefen Atemzug. Öffne dein
 
 *Ich wünsche dir viel Frieden und Freude in deinem Leben. 🙏*
 
-![Bild 16](Images/bild_16.jpg)
+![Bild 16](https://juppijo.github.io/Logik_des_Universums/images/bild_16.jpg)
 
 INTERSEIN
 
@@ -652,7 +652,7 @@ Würde auch nur ein Glied in der Kette der Kausalität fehlen. Dann wäre die Ke
 
 Existieren wir weiter in allem, was uns umgibt? Sind wir somit ewig?
 
-![Bild 17](Images/bild_17.jpg) ![Bild 18](Images/bild_18.jpg)
+![Bild 17](https://juppijo.github.io/Logik_des_Universums/images/bild_17.jpg) ![Bild 18](https://juppijo.github.io/Logik_des_Universums/images/bild_18.jpg)
 
 ***Verantwortung und Sinn.***
 
@@ -692,7 +692,7 @@ Es gibt verschiedene Möglichkeiten, wie Sie buddhistische Psychologie in Ihrem 
 
 Der Unterschied zwischen buddhistischer Psychologie und westlicher Psychologie liegt vor allem in der Rolle und dem Verständnis des Ichs. Während die westliche Psychologie die Stärkung des Ichs als Ziel der Therapie sieht, zielt die buddhistische Psychologie auf die Durchschauung und Überwindung des Ichs als Quelle des Leidens ab. Die westliche Psychologie basiert auf empirischen Methoden und objektiven Kriterien, die buddhistische Psychologie betont die Erforschung und Schulung des Geistes und die persönliche Erfahrung. Die westliche Psychologie bietet verschiedene Therapieformen an, die sich auf unterschiedliche Aspekte der Psyche konzentrieren, die buddhistische Psychologie folgt einem einheitlichen Weg, der auf den vier edlen Wahrheiten und dem achtfachen Pfad beruht. Die westliche Psychologie und die buddhistische Psychologie können sich jedoch auch ergänzen und voneinander lernen, um den Menschen auf seinem Weg der Heilung zu unterstützen⁴.
 
-![Bild 19](Images/bild_19.jpg)
+![Bild 19](https://juppijo.github.io/Logik_des_Universums/images/bild_19.jpg)
 
 *„Wenn der Geist still ist, kann sich das Herz öffnen.“*
 
@@ -1086,7 +1086,7 @@ Nun stellen Sie sich vor, dass Sie das Universum sind. Das Universum ist Teil de
 
 Atmen Sie tief ein und aus und spüren Sie, wie Ihre Verbindung zum Universum stärker wird. Spüren Sie die Liebe und das Mitgefühl, die durch diese Verbindung fließen.
 
-![Bild 20](Images/bild_20.jpg)
+![Bild 20](https://juppijo.github.io/Logik_des_Universums/images/bild_20.jpg)
 
 ### \*\*Meditation über Intersein:\*\* 2
 
@@ -1112,7 +1112,7 @@ Möge diese Meditation dich daran erinnern, dass du nie allein bist. Du bist ein
 
 ## Kapitel 6 - ZEN Philosophie
 
-![Bild 21](Images/bild_21.jpg)
+![Bild 21](https://juppijo.github.io/Logik_des_Universums/images/bild_21.jpg)
 
 ### Die 5 Sprachen der Liebe
 
@@ -1148,7 +1148,7 @@ Für Menschen, die die Love Language Zärtlichkeit sprechen, sind Streicheleinhe
 
 #### Der achtfache Pfad.
 
-## ![Bild 22](Images/bild_22.jpg)
+## ![Bild 22](https://juppijo.github.io/Logik_des_Universums/images/bild_22.jpg)
 
 ### Der edle achtfache Pfad
 
@@ -1232,7 +1232,7 @@ Volition ist die Fähigkeit, Wunschvorstellungen (Absichten, Motive oder Ziele) 
 
 ***Wir sind Bewusstsein und Intersein. Liebe, Achtsamkeit.***
 
-![Bild 23](Images/bild_23.jpg)
+![Bild 23](https://juppijo.github.io/Logik_des_Universums/images/bild_23.jpg)
 
 ***Bild Kreis mit den WORTEN : Bewusstsein , Intersein. Liebe, Konzentration, Achtsamkeit.***
 
@@ -1284,7 +1284,7 @@ Dualität kann auch in der Ethik, der Literatur und der Kunst gefunden werden, w
 
 ***"Alles, was wir für uns selbst tun, tun wir auch für andere, und alles, was wir für andere tun, tun wir auch für uns selbst."- TNH***
 
-![Bild 24](Images/bild_24.jpg)
+![Bild 24](https://juppijo.github.io/Logik_des_Universums/images/bild_24.jpg)
 
 *Stell dir vor, du bist ein einzelner Tropfen im Ozean. Du magst dich als getrennt von den anderen Tropfen fühlen, aber in Wahrheit bist du ein Teil des gesamten Ozeans. Dein “Dein” und “Mein” sind nur vorübergehende Illusionen, die durch die Begrenzungen deiner Wahrnehmung entstehen. In Wirklichkeit sind wir alle miteinander verbunden, wie die Wellen, die sich im Ozean bewegen.*
 
@@ -1304,7 +1304,7 @@ Liebe ist die Brücke, die uns vom Denken zum Sein führt. Sie zeigt uns, dass w
 
 ***„Ich liebe, also sind wir“***
 
-![Bild 25](Images/bild_25.jpg)
+![Bild 25](https://juppijo.github.io/Logik_des_Universums/images/bild_25.jpg)
 
 ## Kapitel 8- Der Weg zum Glück.
 
@@ -1404,7 +1404,7 @@ Das sind nur einige Beispiele, wie Thích Nhất Hạnh uns gezeigt hat, wie wir
 
 *5 Sei skeptisch, aber höre gut zu.*
 
-![Bild 26](Images/bild_26.jpg)
+![Bild 26](https://juppijo.github.io/Logik_des_Universums/images/bild_26.jpg)
 
 Die fünf Versprechen der Tolteken sind eine Reihe von Prinzipien, die auf der alten Weisheit der Tolteken basieren, einer mesoamerikanischen Kultur, die zwischen dem 10. und 12. Jahrhundert den größten Teil Zentralmexikos beherrschte. Die Versprechen sollen den Menschen helfen, sich selbst zu befreien und ein erfülltes Leben zu führen. Die fünf Versprechen sind:
 
@@ -1440,7 +1440,7 @@ Bei der Verkündigung des Dharma haben sich die Buddhas auf die zwei Wahrheiten 
 
 ### Ohne Schlamm kein Lotos
 
-![Bild 27](Images/bild_27.jpg)
+![Bild 27](https://juppijo.github.io/Logik_des_Universums/images/bild_27.jpg)
 
 Die Kunst, Leid zu verwandeln, von Thich Nhat Hanh
 
@@ -1504,7 +1504,7 @@ Archetyp (Psychologie)
 
 *~Thich Nhat Hanh, Nenn mich bei meinen wahren Namen*
 
-![Bild 28](Images/bild_28.jpg)
+![Bild 28](https://juppijo.github.io/Logik_des_Universums/images/bild_28.jpg)
 
 ***Zen Stichwörter***
 
