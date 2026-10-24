@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Logik des Universums 5.0 – Studio & Werkstatt</title>
+  <!-- Marked.js for Markdown parsing -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <!-- FontAwesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+        --bg-main: #0d1117;
+        --bg-editor: #161b22;
+        --bg-preview: #0f141c;
+        --text-main: #c9d1d9;
+        --text-muted: #8b949e;
+        --accent-color: #58a6ff;
+        --border-color: #30363d;
+        --toolbar-bg: #21262d;
+        --preview-font: 'Georgia', serif;
+        --font-size: 16px;
+        --line-height: 1.75;
+        --max-width: 850px;
+    }
+    
+    body.theme-parchment {
+        --bg-main: #e6dfd3;
+        --bg-editor: #f4efe6;
+        --bg-preview: #fbf7ee;
+        --text-main: #2c2523;
+        --text-muted: #736862;
+        --accent-color: #8c431d;
+        --border-color: #d3c7b7;
+        --toolbar-bg: #ded4c5;
+    }
+    
+    body.theme-lotus {
+        --bg-main: #f0f4f8;
+        --bg-editor: #ffffff;
+        --bg-preview: #f8fafc;
+        --text-main: #1e293b;
+        --text-muted: #64748b;
+        --accent-color: #0284c7;
+        --border-color: #e2e8f0;
+        --toolbar-bg: #e2e8f0;
+    }
+    
+    body.theme-cyber {
+        --bg-main: #05050a;
+        --bg-editor: #0a0a12;
+        --bg-preview: #07070e;
+        --text-main: #00ffcc;
+        --text-muted: #008877;
+        --accent-color: #ff0077;
+        --border-color: #1a1a3a;
+        --toolbar-bg: #121225;
+    }
+          
+    body.theme-ocean {
+        --bg-main: #06111e;
+        --bg-editor: #0b1a2d;
+        --bg-preview: #081424;
+        --text-main: #d0e4f7;
+        --text-muted: #5f87ac;
+        --accent-color: #00d2ff;
+        --border-color: #173252;
+        --toolbar-bg: #10243e;
+    }
+    
+    body.theme-forest {
+        --bg-main: #0a150f;
+        --bg-editor: #112218;
+        --bg-preview: #0d1a12;
+        --text-main: #d1ebd9;
+        --text-muted: #5e9370;
+        --accent-color: #2ecc71;
+        --border-color: #1f402c;
+        --toolbar-bg: #162e20;
+    }
+    
+    body.theme-sunset {
+        --bg-main: #140d1a;
+        --bg-editor: #1f1429;
+        --bg-preview: #180f21;
+        --text-main: #f2dffc;
+        --text-muted: #9569ab;
+        --accent-color: #ff477e;
+        --border-color: #3b224c;
+        --toolbar-bg: #291a37;
+    }
+    
+    body.theme-slate {
+        --bg-main: #1e222a;
+        --bg-editor: #252b35;
+        --bg-preview: #212630;
+        --text-main: #abb2bf;
+        --text-muted: #636d80;
+        --accent-color: #e5c07b;
+        --border-color: #3b4252;
+        --toolbar-bg: #2c3340;
+    }
+    
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background-color: var(--bg-main);
+        color: var(--text-main);
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        user-select: none;
+    }
+    
+    header {
+        background-color: var(--toolbar-bg);
+        border-bottom: 1px solid var(--border-color);
+        padding: 8px 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 10;
+    }
+    
+    .brand {
+        font-size: 1.1rem;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--accent-color);
+    }
+    
+    .header-actions {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+    
+    .btn {
+        background-color: var(--bg-editor);
+        color: var(--text-main);
+        border: 1px solid var(--border-color);
+        padding: 6px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s;
+    }
+    
+    .btn:hover {
+        border-color: var(--accent-color);
+        color: var(--accent-color);
+    }
+    
+    .btn-active {
+        background-color: var(--accent-color);
+        color: #fff !important;
+        border-color: var(--accent-color);
+    }
+    
+    .workspace {
+        display: flex;
+        flex: 1;
+        height: calc(100vh - 50px);
+        position: relative;
+    }
+    
+    sidebar {
+        width: 320px;
+        background-color: var(--bg-editor);
+        border-right: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+        transition: margin-left 0.3s ease;
+        z-index: 5;
+    }
+    
+    sidebar.collapsed { margin-left: -320px; }
+    
+    .sidebar-header {
+        padding: 12px;
+        font-weight: bold;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .toc-list {
+        list-style: none;
+        overflow-y: auto;
+        flex: 1;
+        padding: 8px 0;
+        user-select: text;
+    }
+    
+    .toc-item {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+        cursor: pointer;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: block;
+        color: var(--text-main);
+        border-left: 3px solid transparent;
+    }
+    
+    .toc-item:hover {
+        background-color: var(--toolbar-bg);
+        color: var(--accent-color);
+        border-left-color: var(--accent-color);
+    }
+    
+    .toc-h1 { font-weight: bold; font-size: 0.95rem; margin-top: 6px; color: var(--accent-color); }
+    .toc-h2 { padding-left: 12px; font-weight: 600; }
+    .toc-h3 { padding-left: 20px; opacity: 0.9; }
+    .toc-h4 { padding-left: 28px; opacity: 0.8; font-style: italic; }
+    .toc-h5, .toc-h6 { padding-left: 36px; opacity: 0.7; font-size: 0.8rem; }
+    
+    .toolbar {
+        background-color: var(--toolbar-bg);
+        border-bottom: 1px solid var(--border-color);
+        padding: 6px 12px;
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+    
+    .tool-group {
+        display: flex;
+        gap: 2px;
+        border-right: 1px solid var(--border-color);
+        padding-right: 6px;
+        margin-right: 4px;
+    }
+    
+    .tool-btn {
+        background: transparent;
+        border: none;
+        color: var(--text-main);
+        width: 30px;
+        height: 30px;
+        border-radius: 4px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.85rem;
+    }
+    
+    .tool-btn:hover {
+        background-color: var(--bg-editor);
+        color: var(--accent-color);
+    }
+    
+    .main-editor {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        overflow: hidden;
+    }
+    
+    .split-container {
+        display: flex;
+        flex: 1;
+        height: calc(100% - 42px);
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .editor-pane {
+        width: 50%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        background-color: var(--bg-editor);
+        overflow: hidden;
+    }
+    
+    .resizer {
+        width: 8px;
+        background-color: var(--border-color);
+        cursor: col-resize;
+        transition: background-color 0.2s;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .resizer::after {
+        content: '⋮';
+        color: var(--text-muted);
+        font-size: 14px;
+        font-weight: bold;
+    }
+    
+    .resizer:hover, .resizer.dragging {
+        background-color: var(--accent-color);
+    }
+    
+    .preview-pane {
+        flex: 1;
+        height: 100%;
+        background-color: var(--bg-preview);
+        padding: 20px 30px;
+        display: flex;
+        justify-content: center;
+        overflow-y: auto;
+        user-select: text;
+    }
+    
+    textarea#markdown-input {
+        width: 100%;
+        height: 100%;
+        background: transparent;
+        border: none;
+        padding: 20px;
+        color: var(--text-main);
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 15px;
+        line-height: 1.6;
+        resize: none;
+        outline: none;
+        display: block;
+        user-select: text;
+        overflow-y: auto;
+    }
+    
+    #preview-output {
+        width: 100%;
+        max-width: var(--max-width);
+        font-family: var(--preview-font);
+        font-size: var(--font-size);
+        line-height: var(--line-height);
+        color: var(--text-main);
+        padding-bottom: 200px;
+    }
+    
+    #preview-output h1 { font-size: 2.2rem; margin: 1.4em 0 0.6em 0; color: var(--accent-color); border-bottom: 2px solid var(--border-color); padding-bottom: 8px; }
+    #preview-output h2 { font-size: 1.7rem; margin: 1.2em 0 0.5em 0; color: var(--accent-color); }
+    #preview-output h3 { font-size: 1.3rem; margin: 1em 0 0.4em 0; }
+    #preview-output h4, #preview-output h5, #preview-output h6 { font-size: 1.05rem; margin: 0.8em 0 0.3em 0; color: var(--text-main); }
+    #preview-output p { margin-bottom: 1.2em; text-align: justify; }
+    #preview-output blockquote {
+        border-left: 4px solid var(--accent-color);
+        padding: 8px 16px;
+        margin: 1.2em 0;
+        background: var(--toolbar-bg);
+        font-style: italic;
+    }
+    #preview-output img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin: 1.2rem 0;
+        border: 1px solid var(--border-color);
+        display: block;
+    }
+    
+    .style-drawer {
+        position: absolute;
+        top: 50px;
+        right: 20px;
+        background: var(--bg-editor);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 16px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+        display: none;
+        z-index: 100;
+        width: 280px;
+    }
+    
+    .style-drawer.open { display: block; }
+    
+    .control-group { margin-bottom: 14px; }
+    .control-group label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 6px; }
+    .control-group select, .control-group input {
+        width: 100%; padding: 6px; background: var(--toolbar-bg);
+        border: 1px solid var(--border-color); color: var(--text-main); border-radius: 4px;
+    }
+    
+    input[type="file"] { display: none; }
+    
+    .workspace.focus-editor .preview-pane, .workspace.focus-editor .resizer { display: none; }
+    .workspace.focus-editor .editor-pane { width: 100% !important; }
+    .workspace.focus-preview .editor-pane, .workspace.focus-preview .resizer { display: none; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <i class="fa-solid fa-atom"></i>
+      <span>Logik des Universums 5.0</span>
+    </div>
+    <div class="header-actions">
+      <button class="btn" onclick="toggleSidebar()"><i class="fa-solid fa-list"></i> Inhaltsverzeichnis</button>
+      <button class="btn" onclick="document.getElementById('file-input').click()"><i class="fa-solid fa-folder-open"></i> Datei Laden (.md)</button>
+      <button class="btn btn-active" id="sync-btn" onclick="toggleSyncScroll()"><i class="fa-solid fa-arrows-up-down"></i> Sync Scroll: AN</button>
+      <button class="btn" onclick="saveJSON()"><i class="fa-solid fa-floppy-disk"></i> Speichern</button>
+      <button class="btn" onclick="exportMarkdown()"><i class="fa-solid fa-file-code"></i> Export (.md)</button>
+      <button class="btn" onclick="exportHTML()"><i class="fa-solid fa-file-lines"></i> Export (.html)</button>
+      <button class="btn" onclick="toggleStyleDrawer()"><i class="fa-solid fa-palette"></i> Style</button>
+      <button class="btn" onclick="toggleFullscreen()"><i class="fa-solid fa-expand" id="fullscreen-icon"></i> Vollbild</button>
+    </div>
+  </header>
+
+  <div class="workspace" id="workspace">
+
+    <!-- Sidebar Navigation -->
+    <sidebar id="sidebar">
+      <div class="sidebar-header">
+        <span>Inhaltsverzeichnis</span>
+        <i class="fa-solid fa-book-bookmark"></i>
+      </div>
+      <ul class="toc-list" id="toc-container"></ul>
+    </sidebar>
+
+    <!-- Main Area -->
+    <div class="main-editor">
+
+      <div class="toolbar">
+        <div class="tool-group">
+          <button class="tool-btn" onclick="insertMD('**', '**')" title="Fett"><i class="fa-solid fa-bold"></i></button>
+          <button class="tool-btn" onclick="insertMD('*', '*')" title="Kursiv"><i class="fa-solid fa-italic"></i></button>
+          <button class="tool-btn" onclick="insertMD('# ')" title="H1"><i class="fa-solid fa-heading"></i></button>
+          <button class="tool-btn" onclick="insertMD('## ')" title="H2">H2</button>
+          <button class="tool-btn" onclick="insertMD('### ')" title="H3">H3</button>
+        </div>
+
+        <div class="tool-group">
+          <button class="tool-btn" onclick="insertMD('> ')" title="Zitat"><i class="fa-solid fa-quote-right"></i></button>
+          <button class="tool-btn" onclick="insertMD('- ')" title="Liste"><i class="fa-solid fa-list-ul"></i></button>
+          <button class="tool-btn" onclick="insertMD('1. ')" title="Nummerierung"><i class="fa-solid fa-list-ol"></i></button>
+        </div>
+
+        <div class="tool-group">
+          <button class="tool-btn" onclick="insertLink()" title="Link einfügen"><i class="fa-solid fa-link"></i></button>
+          <button class="tool-btn" onclick="insertImage()" title="Bild einfügen"><i class="fa-solid fa-image"></i></button>
+        </div>
+
+        <div class="tool-group">
+          <button class="tool-btn" onclick="setFocus('split')" title="Geteilte Ansicht"><i class="fa-solid fa-columns"></i></button>
+          <button class="tool-btn" onclick="setFocus('editor')" title="Nur Editor"><i class="fa-solid fa-pen-to-square"></i></button>
+          <button class="tool-btn" onclick="setFocus('preview')" title="Nur Vorschau"><i class="fa-solid fa-eye"></i></button>
+        </div>
+
+        <div class="tool-group" style="border:none;">
+          <button class="tool-btn" onclick="speakText()" title="Vorlesen"><i class="fa-solid fa-volume-high"></i></button>
+        </div>
+      </div>
+
+      <div class="split-container" id="split-container">
+        <div class="editor-pane" id="editor-pane">
+          <textarea id="markdown-input" placeholder="Laden Sie Ihre buch.md Datei hoch..."></textarea>
+        </div>
+
+        <div class="resizer" id="resizer"></div>
+
+        <div class="preview-pane" id="preview-pane">
+          <div id="preview-output"></div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Style Drawer -->
+  <div class="style-drawer" id="style-drawer">
+    <h4 style="margin-bottom: 12px;"><i class="fa-solid fa-sliders"></i> Design & Typografie</h4>
+
+    <div class="control-group">
+      <label>Farbschema</label>
+      <select onchange="changeTheme(this.value)">
+        <option value="default">Zen Dark</option>
+        <option value="theme-ocean">Deep Ocean Blau</option>
+        <option value="theme-forest">Emerald Forest</option>
+        <option value="theme-sunset">Sunset Crimson</option>
+        <option value="theme-slate">Slate Minimal</option>
+        <option value="theme-parchment">Pergament Warm</option>
+        <option value="theme-lotus">Lotus Light</option>
+        <option value="theme-cyber">Cyber Zen</option>
+      </select>
+    </div>
+
+    <div class="control-group">
+      <label>Schriftart</label>
+      <select onchange="changeFont(this.value)">
+        <option value="'Georgia', serif">Georgia (Buch-Stil)</option>
+        <option value="system-ui, sans-serif">System Sans-Serif</option>
+        <option value="'Courier New', monospace">Monospace</option>
+        <option value="'Palatino', serif">Palatino</option>
+      </select>
+    </div>
+
+    <div class="control-group">
+      <label>Schriftgröße (px)</label>
+      <input type="range" min="14" max="24" value="16" oninput="changeFontSize(this.value)">
+    </div>
+
+    <div class="control-group">
+      <label>Zeilenabstand</label>
+      <input type="range" min="1.2" max="2.2" step="0.1" value="1.75" oninput="changeLineHeight(this.value)">
+    </div>
+
+    <div class="control-group">
+      <label>Buchbreite (px)</label>
+      <input type="range" min="600" max="1100" step="50" value="850" oninput="changeMaxWidth(this.value)">
+    </div>
+  </div>
+
+  <input type="file" id="file-input" accept=".md,.json,.txt" onchange="loadFile(event)">
+
+  <script>
+    const markdownInput = document.getElementById('markdown-input');
+    const previewOutput = document.getElementById('preview-output');
+    const tocContainer = document.getElementById('toc-container');
+    const editorPane = document.getElementById('editor-pane');
+    const previewPane = document.getElementById('preview-pane');
+    const splitContainer = document.getElementById('split-container');
+    const resizer = document.getElementById('resizer');
+    const syncBtn = document.getElementById('sync-btn');
+
+    let syncScrollEnabled = true;
+    let isSyncing = false;
+
+    markdownInput.value = `# LOGIK DES UNIVERSUMS 5.0\n\n## Vorwort\n\nLaden Sie Ihre **buch.md** oben über **"Datei Laden (.md)"** ein.\n\n- **Sync Scroll AN/AUS:** Nutzen Sie den Schalter oben, um das synchrone Mitschrollen nahtlos ein- und auszuschalten.\n- **Export:** Sie können Ihr Dokument jederzeit als Markdown (.md) oder als formatierte HTML-Datei (.html) exportieren.`;
+
+    markdownInput.addEventListener('input', onTextChange);
+    onTextChange();
+    setupSyncScroll();
+    setupResizer();
+
+    function onTextChange() {
+      updatePreview();
+      generateTOC();
+    }
+
+    function updatePreview() {
+      let rawMD = markdownInput.value;
+      rawMD = rawMD.replace(/!\[(.*?)\]\((Images\/.*?)\)/gi, (match, alt) => {
+        return `![${alt}](https://via.placeholder.com/800x400/21262d/58a6ff?text=${encodeURIComponent(alt || 'Illustration')})`;
+      });
+      previewOutput.innerHTML = marked.parse(rawMD);
+    }
+
+    function generateTOC() {
+      tocContainer.innerHTML = '';
+      const lines = markdownInput.value.split('\n');
+      let headingCount = 0;
+
+      lines.forEach((line, index) => {
+        const match = line.match(/^(#{1,6})\s+(.+)$/);
+        if (match) {
+          headingCount++;
+          const level = match[1].length;
+          const title = match[2].replace(/[*_#`]/g, '').trim();
+
+          const li = document.createElement('li');
+          li.className = `toc-item toc-h${level}`;
+          li.innerText = title;
+
+          li.onclick = () => {
+            scrollToHeading(title, index);
+          };
+
+          tocContainer.appendChild(li);
+        }
+      });
+
+      if (headingCount === 0) {
+        tocContainer.innerHTML = '<li style="padding:12px; font-size:0.8rem; color:var(--text-muted);">Keine Überschriften gefunden.</li>';
+      }
+    }
+
+    function scrollToHeading(headingTitle, lineIndex) {
+      const lines = markdownInput.value.split('\n');
+      let charPos = 0;
+      for (let i = 0; i < lineIndex; i++) {
+        charPos += lines[i].length + 1;
+      }
+      markdownInput.focus();
+      markdownInput.setSelectionRange(charPos, charPos);
+
+      const maxEditorScroll = markdownInput.scrollHeight - markdownInput.clientHeight;
+      if (maxEditorScroll > 0) {
+        const linePercent = lineIndex / lines.length;
+        markdownInput.scrollTop = linePercent * maxEditorScroll;
+      }
+
+      const headings = previewOutput.querySelectorAll('h1, h2, h3, h4, h5, h6');
+      for (let h of headings) {
+        if (h.innerText.includes(headingTitle)) {
+          h.scrollIntoView({ behavior: 'smooth' });
+          break;
+        }
+      }
+    }
+
+    function toggleSyncScroll() {
+      syncScrollEnabled = !syncScrollEnabled;
+      if (syncScrollEnabled) {
+        syncBtn.classList.add('btn-active');
+        syncBtn.innerHTML = '<i class="fa-solid fa-arrows-up-down"></i> Sync Scroll: AN';
+      } else {
+        syncBtn.classList.remove('btn-active');
+        syncBtn.innerHTML = '<i class="fa-solid fa-arrows-up-down"></i> Sync Scroll: AUS';
+      }
+    }
+
+    function setupSyncScroll() {
+      markdownInput.addEventListener('scroll', () => {
+        if (!syncScrollEnabled || isSyncing) return;
+        isSyncing = true;
+
+        const maxEditorScroll = markdownInput.scrollHeight - markdownInput.clientHeight;
+        if (maxEditorScroll > 0) {
+          const scrollPercentage = markdownInput.scrollTop / maxEditorScroll;
+          const maxPreviewScroll = previewPane.scrollHeight - previewPane.clientHeight;
+          previewPane.scrollTop = scrollPercentage * maxPreviewScroll;
+        }
+
+        requestAnimationFrame(() => { isSyncing = false; });
+      });
+
+      previewPane.addEventListener('scroll', () => {
+        if (!syncScrollEnabled || isSyncing) return;
+        isSyncing = true;
+
+        const maxPreviewScroll = previewPane.scrollHeight - previewPane.clientHeight;
+        if (maxPreviewScroll > 0) {
+          const scrollPercentage = previewPane.scrollTop / maxPreviewScroll;
+          const maxEditorScroll = markdownInput.scrollHeight - markdownInput.clientHeight;
+          markdownInput.scrollTop = scrollPercentage * maxEditorScroll;
+        }
+
+        requestAnimationFrame(() => { isSyncing = false; });
+      });
+    }
+
+    function setupResizer() {
+      let isDragging = false;
+
+      resizer.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        resizer.classList.add('dragging');
+        document.body.style.cursor = 'col-resize';
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        const containerRect = splitContainer.getBoundingClientRect();
+        let newEditorWidth = e.clientX - containerRect.left;
+
+        if (newEditorWidth < 150) newEditorWidth = 150;
+        if (newEditorWidth > containerRect.width - 150) newEditorWidth = containerRect.width - 150;
+
+        editorPane.style.width = `${newEditorWidth}px`;
+      });
+
+      document.addEventListener('mouseup', () => {
+        if (isDragging) {
+          isDragging = false;
+          resizer.classList.remove('dragging');
+          document.body.style.cursor = 'default';
+        }
+      });
+    }
+
+    function loadFile(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const text = e.target.result;
+        if (file.name.endsWith('.json')) {
+          try {
+            const parsed = JSON.parse(text);
+            markdownInput.value = parsed.content || text;
+          } catch (err) {
+            markdownInput.value = text;
+          }
+        } else {
+          markdownInput.value = text;
+        }
+        onTextChange();
+        markdownInput.scrollTop = 0;
+        previewPane.scrollTop = 0;
+      };
+      reader.readAsText(file);
+    }
+
+    function toggleFullscreen() {
+      const icon = document.getElementById('fullscreen-icon');
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+        icon.className = 'fa-solid fa-compress';
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+          icon.className = 'fa-solid fa-expand';
+        }
+      }
+    }
+
+    function insertMD(start, end = '') {
+      const el = markdownInput;
+      const startPos = el.selectionStart;
+      const endPos = el.selectionEnd;
+      const selectedText = el.value.substring(startPos, endPos);
+      const replacement = start + selectedText + end;
+      el.value = el.value.substring(0, startPos) + replacement + el.value.substring(endPos);
+      el.focus();
+      onTextChange();
+    }
+
+    function insertLink() {
+      const url = prompt("Link URL:", "https://");
+      if (url) insertMD('[Link Text](', `${url})`);
+    }
+
+    function insertImage() {
+      const url = prompt("Bild URL:", "https://via.placeholder.com/800x400");
+      const alt = prompt("Bildbeschreibung:", "Bild");
+      if (url) insertMD(`![${alt}](`, `${url})`);
+    }
+
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('collapsed');
+    }
+
+    function toggleStyleDrawer() {
+      document.getElementById('style-drawer').classList.toggle('open');
+    }
+
+    function setFocus(mode) {
+      const ws = document.getElementById('workspace');
+      ws.classList.remove('focus-editor', 'focus-preview');
+      if (mode === 'editor') ws.classList.add('focus-editor');
+      if (mode === 'preview') ws.classList.add('focus-preview');
+      if (mode === 'split') editorPane.style.width = '50%';
+    }
+
+    function changeTheme(theme) {
+      document.body.className = '';
+      if (theme !== 'default') document.body.classList.add(theme);
+    }
+
+    function changeFont(font) {
+      document.documentElement.style.setProperty('--preview-font', font);
+    }
+
+    function changeFontSize(px) {
+      document.documentElement.style.setProperty('--font-size', px + 'px');
+    }
+
+    function changeLineHeight(val) {
+      document.documentElement.style.setProperty('--line-height', val);
+    }
+
+    function changeMaxWidth(px) {
+      document.documentElement.style.setProperty('--max-width', px + 'px');
+    }
+
+    function exportMarkdown() {
+      const blob = new Blob([markdownInput.value], { type: 'text/markdown' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'Logik_des_Universums_V5.md';
+      a.click();
+    }
+
+    function exportHTML() {
+      const currentThemeClass = document.body.className;
+      const content = previewOutput.innerHTML;
+      const computedStyles = getComputedStyle(document.documentElement);
+      
+      const fullHTML = `<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Logik des Universums 5.0 - Dokument</title>
+  <style>
+    :root {
+      --bg-preview: ${computedStyles.getPropertyValue('--bg-preview') || '#0f141c'};
+      --text-main: ${computedStyles.getPropertyValue('--text-main') || '#c9d1d9'};
+      --accent-color: ${computedStyles.getPropertyValue('--accent-color') || '#58a6ff'};
+      --border-color: ${computedStyles.getPropertyValue('--border-color') || '#30363d'};
+      --toolbar-bg: ${computedStyles.getPropertyValue('--toolbar-bg') || '#21262d'};
+      --preview-font: ${computedStyles.getPropertyValue('--preview-font') || "'Georgia', serif"};
+      --font-size: ${computedStyles.getPropertyValue('--font-size') || '16px'};
+      --line-height: ${computedStyles.getPropertyValue('--line-height') || '1.75'};
+      --max-width: ${computedStyles.getPropertyValue('--max-width') || '850px'};
+    }
+    body {
+      background-color: var(--bg-preview);
+      color: var(--text-main);
+      font-family: var(--preview-font);
+      font-size: var(--font-size);
+      line-height: var(--line-height);
+      padding: 40px 20px;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+    }
+    .content-container {
+      width: 100%;
+      max-width: var(--max-width);
+    }
+    h1 { font-size: 2.2rem; margin: 1.4em 0 0.6em 0; color: var(--accent-color); border-bottom: 2px solid var(--border-color); padding-bottom: 8px; }
+    h2 { font-size: 1.7rem; margin: 1.2em 0 0.5em 0; color: var(--accent-color); }
+    h3 { font-size: 1.3rem; margin: 1em 0 0.4em 0; }
+    h4, h5, h6 { font-size: 1.05rem; margin: 0.8em 0 0.3em 0; color: var(--text-main); }
+    p { margin-bottom: 1.2em; text-align: justify; }
+    blockquote {
+      border-left: 4px solid var(--accent-color);
+      padding: 8px 16px;
+      margin: 1.2em 0;
+      background: var(--toolbar-bg);
+      font-style: italic;
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      margin: 1.2rem 0;
+      border: 1px solid var(--border-color);
+      display: block;
+    }
+    a { color: var(--accent-color); }
+  </style>
+</head>
+<body class="${currentThemeClass}">
+  <div class="content-container">
+    ${content}
+  </div>
+</body>
+</html>`;
+
+      const blob = new Blob([fullHTML], { type: 'text/html' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'Logik_des_Universums_V5.html';
+      a.click();
+    }
+
+    function saveJSON() {
+      const data = {
+        title: "Logik des Universums 5.0",
+        content: markdownInput.value,
+        updatedAt: new Date().toISOString()
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'Studio_Sitzung_V5.json';
+      a.click();
+    }
+
+    function speakText() {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const text = previewOutput.innerText.substring(0, 1500);
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'de-DE';
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+  </script>
+</body>
+</html>
