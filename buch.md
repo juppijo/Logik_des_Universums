@@ -48,7 +48,7 @@ Wenn die Entwicklung so weitergeht und das bessere „Gute“ überlebt, so müs
 
 ![Bild 3](https://juppijo.github.io/Logik_des_Universums/images/bild_3.jpg)
 
-? — Urknall ---------- Welt-------- Perfektion.
+? —> Urknall ? ->---------> Welt ->-------> Perfektion.
 
 #### Der Anfang.
 
